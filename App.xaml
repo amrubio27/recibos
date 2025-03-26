@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<Application xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:converters="clr-namespace:recibos.Converters"
+             xmlns:converters1="clr-namespace:recibos.core.converters"
+             x:Class="recibos.App">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Resources/Styles/Colors.xaml" />
+                <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            
+            <converters:InvertedBoolConverter x:Key="InvertedBoolConverter" />
+            <converters:NullToBoolConverter x:Key="NullToBoolConverter" />
+            <converters:InvertedNullToBoolConverter x:Key="InvertedNullToBoolConverter" />
+            <converters:EmptyCollectionToBoolConverter x:Key="EmptyCollectionToBoolConverter" />
+            <converters:InvertedEmptyCollectionToBoolConverter x:Key="InvertedEmptyCollectionToBoolConverter" />
+            <converters:EqualToZeroConverter x:Key="EqualToZeroConverter" />
+            <converters:NotEqualToZeroConverter x:Key="NotEqualToZeroConverter" />
+            <converters1:BoolToStringConverter x:Key="BoolToStringConverter" />
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

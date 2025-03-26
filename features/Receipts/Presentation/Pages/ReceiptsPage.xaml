@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:recibos.features.Receipts.Presentation.ViewModels"
+             xmlns:models1="clr-namespace:recibos.features.Receipts.Presentation.Models"
+             x:Class="recibos.features.Receipts.Presentation.Pages.ReceiptsPage"
+             Title="Recibos">
+
+    <Grid>
+        <!-- Contenido principal (búsqueda y lista) -->
+        <Grid RowDefinitions="Auto,*" RowSpacing="0" Padding="10">
+            <!-- Barra de Búsqueda -->
+            <SearchBar
+                Grid.Row="0"
+                Placeholder="Buscar por título o matrícula..."
+                Text="{Binding SearchText}"
+                Style="{StaticResource MaterialSearchBar}" />
+
+            <!-- Lista de Recibos -->
+            <RefreshView
+                Grid.Row="1"
+                Command="{Binding RefreshCommand}"
+                IsRefreshing="{Binding IsRefreshing}">
+                <CollectionView ItemsSource="{Binding FilteredReceipts}"
+                                SelectionMode="None"
+                                ItemsUpdatingScrollMode="KeepLastItemInView">
+                    <!-- Plantilla de los elementos de la lista -->
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="models1:ReceiptListItemModel">
+                            <Border Style="{StaticResource ElevatedCard}" 
+                                    Margin="16,8">
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:ReceiptsViewModel}}, Path=GoToReceiptDetailsCommand}"
+                                        CommandParameter="{Binding .}" />
+                                </Border.GestureRecognizers>
+                                <Grid RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="4">
+                                    <Label Grid.Row="0" Text="{Binding Title, TargetNullValue='[Sin título]'}"
+                                           Style="{StaticResource TitleMedium}" />
+                                    <Label Grid.Row="1" Text="{Binding Matricula, StringFormat='Matrícula: {0}'}"
+                                           Style="{StaticResource BodyMedium}" />
+                                    <Label Grid.Row="2"
+                                           Text="{Binding Nota, TargetNullValue='[Sin nota]', StringFormat='Nota: {0}'}"
+                                           Style="{StaticResource BodyMedium}" />
+                                    <Label Grid.Row="3" Text="{Binding FormattedDate, StringFormat='Fecha: {0}'}"
+                                           Style="{StaticResource LabelMedium}" />
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                    
+                    <!-- Vista de lista vacía -->
+                    <CollectionView.EmptyView>
+                        <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center">
+                            <Label Text="No hay recibos" Style="{StaticResource TitleMedium}"
+                                   HorizontalTextAlignment="Center" />
+                            <Label Text="Pulse el botón + para agregar un nuevo recibo"
+                                   Style="{StaticResource BodyMedium}" HorizontalTextAlignment="Center" />
+                        </VerticalStackLayout>
+                    </CollectionView.EmptyView>
+                </CollectionView>
+            </RefreshView>
+        </Grid>
+
+        <!-- Botón Flotante + -->
+        <Button
+            Text="+"
+            Style="{StaticResource FloatingActionButton}"
+            HorizontalOptions="End"
+            VerticalOptions="End"
+            Command="{Binding AddReceiptCommand}">
+        </Button>
+
+    </Grid>
+</ContentPage>

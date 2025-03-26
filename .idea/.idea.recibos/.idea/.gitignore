@@ -1,0 +1,26 @@
+﻿# Default ignored files
+/shelf/
+/workspace.xml
+# Rider ignored files
+/contentModel.xml
+/modules.xml
+/projectSettingsUpdater.xml
+/.idea.superheroes.iml
+# Editor-based HTTP Client requests
+/httpRequests/
+# Datasource local storage ignored files
+/dataSources/
+/dataSources.local.xm
+
+log/
+bin/
+obj/
+_site/
+.optemp/
+_themes*/
+_repo.*/
+.vs/
+.vscode/
+
+.openpublishing.buildcore.ps1
+.DS_Store
