@@ -7,37 +7,37 @@ using recibos.core.data.services.location;
 using recibos.features.Receipts.Domain.Interfaces;
 using recibos.features.Receipts.Domain.Models;
 using recibos.features.Receipts.Presentation.Models;
+using recibos.Resources.Strings;
 
 namespace recibos.features.Receipts.Presentation.ViewModels {
     [QueryProperty(nameof(ReceiptId), "id")]
+    
     public partial class ReceiptDetailViewModel : ObservableObject {
         private readonly IReceiptService _receiptService;
         private readonly IReceiptPresentationMapper _mapper;
         private readonly ILocationService _locationService;
 
-        [ObservableProperty] private ReceiptDetailModel _receipt;
+        [ObservableProperty] [NotifyPropertyChangedFor(nameof(OperationType))] private ReceiptDetailModel _receipt;
         [ObservableProperty] private string _receiptId;
-        [ObservableProperty] [NotifyPropertyChangedFor(nameof(IsNotLoading))]
-        private bool _isLoading;
+        [ObservableProperty] [NotifyPropertyChangedFor(nameof(IsNotLoading))] private bool _isLoading;
         public bool IsNotLoading => !IsLoading;
-        [ObservableProperty] [NotifyPropertyChangedFor(nameof(IsNotEditing))]
-        private bool _isEditing;
+        [ObservableProperty] [NotifyPropertyChangedFor(nameof(IsNotEditing))] private bool _isEditing;
         public bool IsNotEditing => !IsEditing;
         [ObservableProperty] private ImageSource _signatureImage;
         [ObservableProperty] private ObservableCollection<ImageInfo> _photos;
         [ObservableProperty] private bool _isLocationEnabled;
         [ObservableProperty] private bool _isCapturingLocation;
         
-
+        public string OperationType => Receipt?.IsDescarga == true ? AppResources.UnloadLabel : AppResources.LoadLabel;
         public ReceiptDetailViewModel(
             IReceiptService receiptService, 
             IReceiptPresentationMapper mapper,
             ILocationService locationService) {
-            _receiptService = receiptService ?? throw new ArgumentNullException(nameof(receiptService));
-            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-            _locationService = locationService ?? throw new ArgumentNullException(nameof(locationService));
-            Photos = new ObservableCollection<ImageInfo>();
-        }
+                _receiptService = receiptService ?? throw new ArgumentNullException(nameof(receiptService));
+                _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+                _locationService = locationService ?? throw new ArgumentNullException(nameof(locationService));
+                Photos = new ObservableCollection<ImageInfo>();
+            }
 
         partial void OnReceiptIdChanged(string value) {
             try {
@@ -47,6 +47,21 @@ namespace recibos.features.Receipts.Presentation.ViewModels {
             }
             catch (Exception ex) {
                 Debug.WriteLine($"Error al procesar ID: {ex.Message}");
+            }
+        }
+        partial void OnReceiptChanged(ReceiptDetailModel value)
+        {
+            if (value != null)
+            {
+                // Escuchar los cambios de IsDescarga
+                value.PropertyChanged += (sender, e) =>
+                {
+                    if (e.PropertyName == nameof(ReceiptDetailModel.IsDescarga))
+                    {
+                        // Notificar que OperationType también ha cambiado
+                        OnPropertyChanged(nameof(OperationType));
+                    }
+                };
             }
         }
 

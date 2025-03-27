@@ -5,6 +5,7 @@
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              xmlns:converters="clr-namespace:recibos.Converters"
              xmlns:models="clr-namespace:recibos.features.Receipts.Domain.Models"
+             xmlns:strings="clr-namespace:recibos.Resources.Strings"
              x:Class="recibos.features.Receipts.Presentation.Pages.NewReceiptPage"
              x:Name="NewReceiptPageRoot"
              Title="Nuevo Recibo">
@@ -32,41 +33,41 @@
     <ScrollView>
         <VerticalStackLayout Margin="20">
             <!-- Título -->
-            <Label Text="Título:"
+            <Label Text="{x:Static strings:AppResources.TitleLabel}"
                    Style="{StaticResource TitleMedium}" />
             <Entry Text="{Binding Title}"
-                   Placeholder="Ingrese el título (opcional)" />
+                   Placeholder="{x:Static strings:AppResources.TitlePlaceholder}" />
             <!-- Matrícula -->
-            <Label Text="Matrícula: "
+            <Label Text="{x:Static strings:AppResources.LicensePlateLabel}"
                    Style="{StaticResource TitleMedium}" />
             <Entry Text="{Binding Matricula}"
-                   Placeholder="Ingrese la matrícula" />
+                   Placeholder="{x:Static strings:AppResources.LicensePlatePlaceholder}" />
             <!-- Tipo de Movimiento -->
-            <Label Text="Tipo de operación:"
+            <Label Text="{x:Static strings:AppResources.OperationTypeLabel}"
                    Style="{StaticResource TitleMedium}" />
             <HorizontalStackLayout
                 Spacing="12"
                 Margin="0,5,0,10">
                 <Switch IsToggled="{Binding IsDescarga}" />
                 <Label
-                    Text="{Binding IsDescarga, Converter={StaticResource BoolToStringConverter}, ConverterParameter='Carga;Descarga'}"
+                    Text="{Binding OperationType}"
                     Style="{StaticResource BodyMedium}"
                     VerticalOptions="Center" />
             </HorizontalStackLayout>
             <!-- Nota -->
-            <Label Text="Nota:"
+            <Label Text="{x:Static strings:AppResources.NoteLabel}"
                    Style="{StaticResource TitleMedium}" />
             <Entry Text="{Binding Nota}"
-                   Placeholder="Ingrese la nota (opcional)" />
+                   Placeholder="{x:Static strings:AppResources.NotePlaceholder}" />
             <!-- Fotos -->
-            <Label Text="Fotografías:"
+            <Label Text="{x:Static strings:AppResources.PhotosLabel}"
                    Style="{StaticResource TitleMedium}" />
             <Border Style="{StaticResource MaterialCard}"
                     Margin="0,8,0,16">
                 <VerticalStackLayout>
                     <CollectionView ItemsSource="{Binding Photos}"
                                     HeightRequest="200"
-                                    EmptyView="No hay fotos todavía">
+                                    EmptyView="{x:Static strings:AppResources.NoPhotosYet}">
                         <CollectionView.ItemsLayout>
                             <LinearItemsLayout Orientation="Horizontal" ItemSpacing="10" />
                         </CollectionView.ItemsLayout>
@@ -80,40 +81,47 @@
                                     <Button Text="X"
                                             Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeletePhotoCommand}"
                                             CommandParameter="{Binding .}"
-                                            BackgroundColor="#dc3545" TextColor="White"
-                                            HeightRequest="30" WidthRequest="30"
-                                            Padding="0" CornerRadius="15"
-                                            HorizontalOptions="End" VerticalOptions="Start"
+                                            BackgroundColor="#dc3545" 
+                                            TextColor="White"
+                                            HeightRequest="30" 
+                                            WidthRequest="30"
+                                            Padding="0" 
+                                            CornerRadius="15"
+                                            HorizontalOptions="End" 
+                                            VerticalOptions="Start"
                                             Margin="0,5,5,0" />
                                 </Grid>
                             </DataTemplate>
                         </CollectionView.ItemTemplate>
                     </CollectionView>
-                    <Button Text="Tomar Foto"
+                    <Button Text="{x:Static strings:AppResources.TakePhoto}"
                             Command="{Binding TakePhotoCommand}" />
                 </VerticalStackLayout>
             </Border>
             <!-- Localizacion -->
-            <Label Text="Ubicación:" 
+            <Label Text="{x:Static strings:AppResources.LocationLabel}"
                    Style="{StaticResource TitleMedium}" />
             <Border Style="{StaticResource MaterialCard}"
                     Margin="0,8,0,16">
                 <VerticalStackLayout>
                     <!-- Location info display -->
                     <VerticalStackLayout IsVisible="{Binding IsLocationEnabled}">
-                        <Label Text="{Binding LocationDescription}" Style="{StaticResource BodyMedium}"
+                        <Label Text="{Binding LocationDescription}" 
+                               Style="{StaticResource BodyMedium}"
                                TextColor="#007bff" />
                         <Label Text="{Binding Latitude, StringFormat='Lat: {0:F6}'}"
-                               Style="{StaticResource LabelMedium}" TextColor="Gray" />
+                               Style="{StaticResource LabelMedium}" 
+                               TextColor="Gray" />
                         <Label Text="{Binding Longitude, StringFormat='Long: {0:F6}'}"
-                               Style="{StaticResource LabelMedium}" TextColor="Gray" />
-                        <Button Text="Borrar Ubicación"
+                               Style="{StaticResource LabelMedium}" 
+                               TextColor="Gray" />
+                        <Button Text="{x:Static strings:AppResources.DeleteLocation}"
                                 Command="{Binding ClearLocationCommand}"
                                 Style="{StaticResource DeleteButton}" />
                     </VerticalStackLayout>
 
                     <!-- Capture location button -->
-                    <Button Text="Capturar Ubicación Actual"
+                    <Button Text="{x:Static strings:AppResources.CaptureCurrentLocation}"
                             Style="{StaticResource SaveButton}"
                             Command="{Binding CaptureLocationCommand}"
                             IsEnabled="{Binding IsCapturingLocation, Converter={StaticResource InvertedBoolConverter}}" />
@@ -123,13 +131,13 @@
                 </VerticalStackLayout>
             </Border>
             <!-- Firma -->
-            <Label Text="Firma:"
+            <Label Text="{x:Static strings:AppResources.SignatureLabel}"
                    Style="{StaticResource TitleMedium}" />
             <HorizontalStackLayout Spacing="10" Margin="0,0,0,10">
                 <CheckBox x:Name="NoSignatureCheckbox"
                           IsChecked="{Binding NoSignatureRequired}" 
                           VerticalOptions="Center"/>
-                <Label Text="No requiere firma"
+                <Label Text="{x:Static strings:AppResources.NoSignatureRequired}"
                        Style="{StaticResource BodyMedium}"
                        VerticalOptions="Center"/>
             </HorizontalStackLayout>
@@ -140,19 +148,24 @@
                 <VerticalStackLayout>
                     <toolkit:DrawingView x:Name="SignatureDrawingView"
                                          HeightRequest="200"
-                                         BackgroundColor="{AppThemeBinding Light=White, Dark={StaticResource SurfaceDark}}"
+                                         BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}"
                                          LineColor="{AppThemeBinding Light={StaticResource OnSurface}, Dark={StaticResource OnSurfaceDark}}"
                                          LineWidth="3" />
-                    <Button Text="Limpiar Firma" Clicked="ClearSignature_Clicked"
+                    <Button Text="{x:Static strings:AppResources.ClearSignature}"
+                            Clicked="ClearSignature_Clicked"
                             Style="{StaticResource DeleteButton}" />
                 </VerticalStackLayout>
             </Border>
             <!-- Botones -->
-            <Button Text="Guardar" Clicked="SaveButton_Clicked"
+            <Button Text="{x:Static strings:AppResources.SaveButton}" 
+                    Clicked="SaveButton_Clicked"
                     Style="{StaticResource SaveButton}" />
-            <Button Text="Cancelar" Command="{Binding CancelCommand}"
+            <Button Text="{x:Static strings:AppResources.CancelButton}" 
+                    Command="{Binding CancelCommand}"
                     Style="{StaticResource DeleteButton}" />
-            <ActivityIndicator IsVisible="{Binding IsBusy}" IsRunning="{Binding IsBusy}" HorizontalOptions="Center"
+            <ActivityIndicator IsVisible="{Binding IsBusy}" 
+                               IsRunning="{Binding IsBusy}" 
+                               HorizontalOptions="Center"
                                Margin="0,20,0,0" />
         </VerticalStackLayout>
     </ScrollView>

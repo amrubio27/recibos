@@ -107,6 +107,11 @@
         <DependentUpon>ReceiptsPage.xaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>
+      <Compile Update="Resources\Strings\AppResources.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>AppResources.resx</DependentUpon>
+      </Compile>
     </ItemGroup>
 
     <ItemGroup Condition="$(TargetFramework.Contains('-android'))">
@@ -120,6 +125,13 @@
       <AdditionalFiles Include="features\Receipts\Presentation\Pages\NewReceiptPage.xaml" />
       <AdditionalFiles Include="features\Receipts\Presentation\Pages\ReceiptDetailPage.xaml" />
       <AdditionalFiles Include="features\Receipts\Presentation\Pages\ReceiptsPage.xaml" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Update="Resources\Strings\AppResources.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>AppResources.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
     </ItemGroup>
 
 </Project>

@@ -19,7 +19,7 @@ namespace recibos.features.Receipts.Presentation.ViewModels {
         [ObservableProperty] private string _nota;
         [ObservableProperty] private string _signatureBase64;
         [ObservableProperty] private bool _noSignatureRequired;
-        [ObservableProperty] private bool _isDescarga = false;
+        [ObservableProperty] [NotifyPropertyChangedFor(nameof(OperationType))] private bool _isDescarga = false;
         [ObservableProperty] private ObservableCollection<ImageInfo> _photos;
         [ObservableProperty] [NotifyPropertyChangedFor(nameof(IsNotBusy))] private bool _isBusy;
         public bool IsNotBusy => !IsBusy;
@@ -28,6 +28,10 @@ namespace recibos.features.Receipts.Presentation.ViewModels {
         [ObservableProperty] private string _locationDescription;
         [ObservableProperty] private bool _isLocationEnabled;
         [ObservableProperty] private bool _isCapturingLocation;
+        
+        public string OperationType => IsDescarga ? 
+            Resources.Strings.AppResources.UnloadLabel : 
+            Resources.Strings.AppResources.LoadLabel;
 
         public NewReceiptViewModel(
             IReceiptService receiptService, 

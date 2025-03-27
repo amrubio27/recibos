@@ -23,11 +23,12 @@
   <component name="ChangeListManager">
     <list default="true" id="e5354d4c-6bb5-4468-8482-c252d3347149" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.recibos/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.recibos/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Resources/Styles/Colors.xaml" beforeDir="false" afterPath="$PROJECT_DIR$/Resources/Styles/Colors.xaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Resources/Styles/Styles.xaml" beforeDir="false" afterPath="$PROJECT_DIR$/Resources/Styles/Styles.xaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Resources/Strings/AppResources.Designer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Resources/Strings/AppResources.Designer.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Resources/Strings/AppResources.resx" beforeDir="false" afterPath="$PROJECT_DIR$/Resources/Strings/AppResources.resx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/features/Receipts/Presentation/Pages/NewReceiptPage.xaml" beforeDir="false" afterPath="$PROJECT_DIR$/features/Receipts/Presentation/Pages/NewReceiptPage.xaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/features/Receipts/Presentation/Pages/ReceiptDetailPage.xaml" beforeDir="false" afterPath="$PROJECT_DIR$/features/Receipts/Presentation/Pages/ReceiptDetailPage.xaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/features/Receipts/Presentation/Pages/ReceiptsPage.xaml" beforeDir="false" afterPath="$PROJECT_DIR$/features/Receipts/Presentation/Pages/ReceiptsPage.xaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/Receipts/Presentation/ViewModels/NewReceiptViewModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/features/Receipts/Presentation/ViewModels/NewReceiptViewModel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/Receipts/Presentation/ViewModels/ReceiptDetailViewModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/features/Receipts/Presentation/ViewModels/ReceiptDetailViewModel.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -47,6 +48,14 @@
   </component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/Resources/Fonts/FluentUI.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://diff.resx" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock://diff.resx" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock://diff.xaml" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://diff.xaml" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://diff.xaml" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://diff.xaml" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://diff.xaml" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://diff.xaml" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="InvalidFacetManager">
     <ignored-facets>
@@ -74,7 +83,7 @@
     &quot;Android.superheroes.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;chore/3/string__revision&quot;,
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
@@ -215,6 +224,8 @@
       <workItem from="1742565014773" duration="2144000" />
       <workItem from="1742567508653" duration="120000" />
       <workItem from="1742902568807" duration="9738000" />
+      <workItem from="1743030498229" duration="1273000" />
+      <workItem from="1743073840205" duration="5447000" />
     </task>
     <task id="LOCAL-00001" summary="-commit">
       <option name="closed" value="true" />
@@ -248,7 +259,15 @@
       <option name="project" value="LOCAL" />
       <updated>1742567461510</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="chore/3:&#10;- Generate resources files.&#10;- Add 2 of 3 features...">
+      <option name="closed" value="true" />
+      <created>1743002759033</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1743002759033</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -264,7 +283,8 @@
     <MESSAGE value="-commit 1" />
     <MESSAGE value="-commit" />
     <MESSAGE value="swipe to refresh bug solved" />
-    <option name="LAST_COMMIT_MESSAGE" value="swipe to refresh bug solved" />
+    <MESSAGE value="chore/3:&#10;- Generate resources files.&#10;- Add 2 of 3 features..." />
+    <option name="LAST_COMMIT_MESSAGE" value="chore/3:&#10;- Generate resources files.&#10;- Add 2 of 3 features..." />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

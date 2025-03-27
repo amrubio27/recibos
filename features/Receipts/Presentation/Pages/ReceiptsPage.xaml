@@ -4,8 +4,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewmodels="clr-namespace:recibos.features.Receipts.Presentation.ViewModels"
              xmlns:models1="clr-namespace:recibos.features.Receipts.Presentation.Models"
+             xmlns:strings="clr-namespace:recibos.Resources.Strings"
              x:Class="recibos.features.Receipts.Presentation.Pages.ReceiptsPage"
-             Title="Recibos">
+             Title="{x:Static strings:AppResources.PageTitle}">
 
     <Grid>
         <!-- Contenido principal (búsqueda y lista) -->
@@ -13,7 +14,7 @@
             <!-- Barra de Búsqueda -->
             <SearchBar
                 Grid.Row="0"
-                Placeholder="Buscar por título o matrícula..."
+                Placeholder="{x:Static strings:AppResources.SearchBarPlaceholder}"
                 Text="{Binding SearchText}"
                 Style="{StaticResource MaterialSearchBar}" />
 
@@ -36,14 +37,11 @@
                                         CommandParameter="{Binding .}" />
                                 </Border.GestureRecognizers>
                                 <Grid RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="4">
-                                    <Label Grid.Row="0" Text="{Binding Title, TargetNullValue='[Sin título]'}"
+                                    <Label Grid.Row="0" Text="{Binding Title, TargetNullValue={x:Static strings:AppResources.NoTitle}}"
                                            Style="{StaticResource TitleMedium}" />
-                                    <Label Grid.Row="1" Text="{Binding Matricula, StringFormat='Matrícula: {0}'}"
+                                    <Label Grid.Row="1" Text="{Binding Matricula, StringFormat={x:Static strings:AppResources.LicensePlateFormat}}"
                                            Style="{StaticResource BodyMedium}" />
-                                    <Label Grid.Row="2"
-                                           Text="{Binding Nota, TargetNullValue='[Sin nota]', StringFormat='Nota: {0}'}"
-                                           Style="{StaticResource BodyMedium}" />
-                                    <Label Grid.Row="3" Text="{Binding FormattedDate, StringFormat='Fecha: {0}'}"
+                                    <Label Grid.Row="2" Text="{Binding FormattedDate, StringFormat={x:Static strings:AppResources.DateFormat}}"
                                            Style="{StaticResource LabelMedium}" />
                                 </Grid>
                             </Border>
@@ -53,9 +51,9 @@
                     <!-- Vista de lista vacía -->
                     <CollectionView.EmptyView>
                         <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center">
-                            <Label Text="No hay recibos" Style="{StaticResource TitleMedium}"
+                            <Label Text="{x:Static strings:AppResources.EmptyListTitle}" Style="{StaticResource TitleMedium}"
                                    HorizontalTextAlignment="Center" />
-                            <Label Text="Pulse el botón + para agregar un nuevo recibo"
+                            <Label Text="{x:Static strings:AppResources.EmptyListMessage}"
                                    Style="{StaticResource BodyMedium}" HorizontalTextAlignment="Center" />
                         </VerticalStackLayout>
                     </CollectionView.EmptyView>
@@ -65,7 +63,7 @@
 
         <!-- Botón Flotante + -->
         <Button
-            Text="+"
+            Text="{x:Static strings:AppResources.AddReceiptButton}"
             Style="{StaticResource FloatingActionButton}"
             HorizontalOptions="End"
             VerticalOptions="End"
