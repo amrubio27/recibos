@@ -57,9 +57,6 @@
     </data>
 
     <!-- NewReceiptPage -->
-    <data name="NewReceiptTitle" xml:space="preserve">
-    <value>Nuevo Recibo</value>
-    </data>
     <data name="TitleLabel" xml:space="preserve">
     <value>Título:</value>
     </data>
@@ -160,5 +157,8 @@
     </data>
     <data name="BackButton" xml:space="preserve">
     <value>Volver</value>
+    </data>
+    <data name="NewReceiptPageTitle" xml:space="preserve">
+        <value>Nuevo recibo</value>
     </data>
 </root>

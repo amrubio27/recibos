@@ -2,10 +2,8 @@ using System.Diagnostics;
 using Newtonsoft.Json;
 using SQLite;
 
-namespace recibos.features.Receipts.Domain.Models
-{
-    public class Receipt
-    {
+namespace recibos.features.Receipts.Domain.Models {
+    public class Receipt {
         public int Id { get; set; }
         public string Title { get; set; }
         public string Matricula { get; set; }

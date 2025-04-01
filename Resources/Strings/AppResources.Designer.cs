@@ -231,11 +231,11 @@ namespace recibos.Resources.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Nuevo Recibo.
+        ///   Looks up a localized string similar to Nuevo recibo.
         /// </summary>
-        internal static string NewReceiptTitle {
+        internal static string NewReceiptPageTitle {
             get {
-                return ResourceManager.GetString("NewReceiptTitle", resourceCulture);
+                return ResourceManager.GetString("NewReceiptPageTitle", resourceCulture);
             }
         }
         

@@ -21,14 +21,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e5354d4c-6bb5-4468-8482-c252d3347149" name="Changes" comment="">
+    <list default="true" id="e5354d4c-6bb5-4468-8482-c252d3347149" name="Changes" comment="-commit">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.recibos/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.recibos/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Resources/Strings/AppResources.Designer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Resources/Strings/AppResources.Designer.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Resources/Strings/AppResources.resx" beforeDir="false" afterPath="$PROJECT_DIR$/Resources/Strings/AppResources.resx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/features/Receipts/Presentation/Pages/NewReceiptPage.xaml" beforeDir="false" afterPath="$PROJECT_DIR$/features/Receipts/Presentation/Pages/NewReceiptPage.xaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/features/Receipts/Presentation/Pages/ReceiptDetailPage.xaml" beforeDir="false" afterPath="$PROJECT_DIR$/features/Receipts/Presentation/Pages/ReceiptDetailPage.xaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/features/Receipts/Presentation/ViewModels/NewReceiptViewModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/features/Receipts/Presentation/ViewModels/NewReceiptViewModel.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/features/Receipts/Presentation/ViewModels/ReceiptDetailViewModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/features/Receipts/Presentation/ViewModels/ReceiptDetailViewModel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/recibos.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/recibos.csproj" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -39,23 +35,26 @@
     <option name="firstShow" value="false" />
   </component>
   <component name="Git.Settings">
+    <option name="PREVIOUS_COMMIT_AUTHORS">
+      <list>
+        <option value="Miguel Alvarez - neXacom &lt;miguelalvarez@nexacom.es&gt;" />
+      </list>
+    </option>
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="feature/0/start" />
+        <entry key="$PROJECT_DIR$" value="develop" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="HighlightingSettingsPerFile">
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/fa1dd9ebea84d93752acce07f99818f9cbf64510d4d79e5753eb7fc596a261/View.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Resources/Fonts/FluentUI.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://diff.resx" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://diff.resx" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://diff.xaml" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://diff.xaml" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://diff.xaml" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://diff.xaml" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://diff.xaml" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://diff.xaml" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://D:/Programacion/neXacom/Recibos/Recibos mejorado/recibos/Resources/Strings/AppResources.Designer.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://D:/Programacion/neXacom/Recibos/Recibos mejorado/recibos/features/Receipts/Presentation/Pages/ReceiptDetailPage.xaml" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://D:/Programacion/neXacom/Recibos/Recibos mejorado/recibos/features/Receipts/Presentation/ViewModels/ReceiptDetailViewModel.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://D:/Programacion/neXacom/Recibos/Recibos mejorado/recibos/features/Receipts/Presentation/ViewModels/ReceiptDetailViewModel.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://D:/Programacion/neXacom/Recibos/Recibos mejorado/recibos/features/Receipts/Presentation/ViewModels/ReceiptDetailViewModel.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="InvalidFacetManager">
     <ignored-facets>
@@ -76,24 +75,24 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;.NET Launch Settings Profile.superheroes: Windows Machine.executor&quot;: &quot;Run&quot;,
-    &quot;Android.recibos.executor&quot;: &quot;Run&quot;,
-    &quot;Android.superheroes.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;chore/3/string__revision&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;project.propVCSSupport.DirectoryMappings&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    ".NET Launch Settings Profile.superheroes: Windows Machine.executor": "Run",
+    "Android.recibos.executor": "Run",
+    "Android.superheroes.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "chore/5/pages__revision",
+    "ignore.virus.scanning.warn.message": "true",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "project.propVCSSupport.DirectoryMappings",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RunManager" selected="Android.recibos">
     <configuration name="superheroes: Windows Machine" type="LaunchSettings" factoryName=".NET Launch Settings Profile">
       <option name="LAUNCH_PROFILE_PROJECT_FILE_PATH" value="$PROJECT_DIR$/recibos.csproj" />
@@ -226,6 +225,7 @@
       <workItem from="1742902568807" duration="9738000" />
       <workItem from="1743030498229" duration="1273000" />
       <workItem from="1743073840205" duration="5447000" />
+      <workItem from="1743155543914" duration="15132000" />
     </task>
     <task id="LOCAL-00001" summary="-commit">
       <option name="closed" value="true" />
@@ -267,7 +267,39 @@
       <option name="project" value="LOCAL" />
       <updated>1743002759033</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Merged PR 2: Creación de Strings Dictionary y reforma de Pages&#10;&#10;Se ha creado el diccionario de strings y se han reformado los Pages para su utilización.&#10;- Se ha corregido un bug en el switch de la vista edicion en el detalle.&#10;&#10;Related work items: #3">
+      <option name="closed" value="true" />
+      <created>1743082576109</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1743082576109</updated>
+    </task>
+    <task id="LOCAL-00007" summary="chore/5:&#10;- improve Ux &amp; Ui&#10;- Fixed some errors...">
+      <option name="closed" value="true" />
+      <created>1743170806093</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1743170806093</updated>
+    </task>
+    <task id="LOCAL-00008" summary="chore/5:&#10;- Reformat code">
+      <option name="closed" value="true" />
+      <created>1743171245364</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1743171245364</updated>
+    </task>
+    <task id="LOCAL-00009" summary="-commit">
+      <option name="closed" value="true" />
+      <created>1743171396118</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1743171396118</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -281,10 +313,15 @@
     </ignored-roots>
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
     <MESSAGE value="-commit 1" />
-    <MESSAGE value="-commit" />
     <MESSAGE value="swipe to refresh bug solved" />
     <MESSAGE value="chore/3:&#10;- Generate resources files.&#10;- Add 2 of 3 features..." />
-    <option name="LAST_COMMIT_MESSAGE" value="chore/3:&#10;- Generate resources files.&#10;- Add 2 of 3 features..." />
+    <MESSAGE value="Merged PR 2: Creación de Strings Dictionary y reforma de Pages&#10;&#10;Se ha creado el diccionario de strings y se han reformado los Pages para su utilización.&#10;- Se ha corregido un bug en el switch de la vista edicion en el detalle.&#10;&#10;Related work items: #3" />
+    <MESSAGE value="chore/5:&#10;- improve Ux &amp; Ui&#10;- Fixed some errors..." />
+    <MESSAGE value="chore/5:&#10;- Reformat code" />
+    <MESSAGE value="-commit" />
+    <option name="LAST_COMMIT_MESSAGE" value="-commit" />
+    <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
+    <option name="REARRANGE_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

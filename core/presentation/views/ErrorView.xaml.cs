@@ -2,28 +2,24 @@
 
 namespace recibos.core.presentation.views;
 
-public partial class ErrorView : ContentView
-{
-    public static readonly BindableProperty ErrorMessageProperty = 
+public partial class ErrorView : ContentView {
+    public static readonly BindableProperty ErrorMessageProperty =
         BindableProperty.Create(nameof(ErrorMessage), typeof(string), typeof(ErrorView), string.Empty);
-        
-    public static readonly BindableProperty RetryCommandProperty = 
+
+    public static readonly BindableProperty RetryCommandProperty =
         BindableProperty.Create(nameof(RetryCommand), typeof(ICommand), typeof(ErrorView));
 
-    public string ErrorMessage
-    {
+    public string ErrorMessage {
         get => (string)GetValue(ErrorMessageProperty);
         set => SetValue(ErrorMessageProperty, value);
     }
 
-    public ICommand RetryCommand
-    {
+    public ICommand RetryCommand {
         get => (ICommand)GetValue(RetryCommandProperty);
         set => SetValue(RetryCommandProperty, value);
     }
 
-    public ErrorView()
-    {
+    public ErrorView() {
         InitializeComponent();
         BindingContext = this;
     }

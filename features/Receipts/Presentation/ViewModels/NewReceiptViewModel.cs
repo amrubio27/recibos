@@ -10,31 +10,32 @@ using recibos.features.Receipts.Presentation.Models;
 
 namespace recibos.features.Receipts.Presentation.ViewModels {
     public partial class NewReceiptViewModel : ObservableObject {
-        private readonly IReceiptService _receiptService;
-        private readonly IReceiptPresentationMapper _mapper;
         private readonly ILocationService _locationService;
+        private readonly IReceiptPresentationMapper _mapper;
+        private readonly IReceiptService _receiptService;
+
+        [ObservableProperty] [NotifyPropertyChangedFor(nameof(IsNotBusy))]
+        private bool _isBusy;
+
+        [ObservableProperty] private bool _isCapturingLocation;
+
+        [ObservableProperty] [NotifyPropertyChangedFor(nameof(OperationType))]
+        private bool _isDescarga = false;
+
+        [ObservableProperty] private bool _isLocationEnabled;
+        [ObservableProperty] private double? _latitude;
+        [ObservableProperty] private string _locationDescription;
+        [ObservableProperty] private double? _longitude;
+        [ObservableProperty] private string _matricula;
+        [ObservableProperty] private bool _noSignatureRequired;
+        [ObservableProperty] private string _nota;
+        [ObservableProperty] private ObservableCollection<ImageInfo> _photos;
+        [ObservableProperty] private string _signatureBase64;
 
         [ObservableProperty] private string _title;
-        [ObservableProperty] private string _matricula;
-        [ObservableProperty] private string _nota;
-        [ObservableProperty] private string _signatureBase64;
-        [ObservableProperty] private bool _noSignatureRequired;
-        [ObservableProperty] [NotifyPropertyChangedFor(nameof(OperationType))] private bool _isDescarga = false;
-        [ObservableProperty] private ObservableCollection<ImageInfo> _photos;
-        [ObservableProperty] [NotifyPropertyChangedFor(nameof(IsNotBusy))] private bool _isBusy;
-        public bool IsNotBusy => !IsBusy;
-        [ObservableProperty] private double? _latitude;
-        [ObservableProperty] private double? _longitude;
-        [ObservableProperty] private string _locationDescription;
-        [ObservableProperty] private bool _isLocationEnabled;
-        [ObservableProperty] private bool _isCapturingLocation;
-        
-        public string OperationType => IsDescarga ? 
-            Resources.Strings.AppResources.UnloadLabel : 
-            Resources.Strings.AppResources.LoadLabel;
 
         public NewReceiptViewModel(
-            IReceiptService receiptService, 
+            IReceiptService receiptService,
             IReceiptPresentationMapper mapper,
             ILocationService locationService) {
             _receiptService = receiptService ?? throw new ArgumentNullException(nameof(receiptService));
@@ -42,6 +43,11 @@ namespace recibos.features.Receipts.Presentation.ViewModels {
             _locationService = locationService ?? throw new ArgumentNullException(nameof(locationService));
             Photos = new ObservableCollection<ImageInfo>();
         }
+
+        public bool IsNotBusy => !IsBusy;
+
+        public string OperationType =>
+            IsDescarga ? Resources.Strings.AppResources.UnloadLabel : Resources.Strings.AppResources.LoadLabel;
 
         [RelayCommand]
         private async Task Cancel() => await Shell.Current.GoToAsync("..");
@@ -92,45 +98,38 @@ namespace recibos.features.Receipts.Presentation.ViewModels {
                 Photos.Remove(photo);
             }
         }
-        
+
         [RelayCommand]
-        private async Task CaptureLocation()
-        {
+        private async Task CaptureLocation() {
             if (IsCapturingLocation) return;
-        
+
             IsCapturingLocation = true;
-        
-            try
-            {
+
+            try {
                 var result = await _locationService.GetCurrentLocationAsync();
-            
-                if (result.IsSuccess)
-                {
+
+                if (result.IsSuccess) {
                     Latitude = result.Latitude;
                     Longitude = result.Longitude;
                     LocationDescription = await _locationService.GetLocationDescriptionAsync(
                         result.Latitude.Value, result.Longitude.Value);
                     IsLocationEnabled = true;
                 }
-                else
-                {
+                else {
                     await Shell.Current.DisplayAlert("Error", result.ErrorMessage, "OK");
                 }
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 Debug.WriteLine($"Error al capturar ubicación: {ex.Message}");
                 await Shell.Current.DisplayAlert("Error", "No se pudo capturar la ubicación", "OK");
             }
-            finally
-            {
+            finally {
                 IsCapturingLocation = false;
             }
         }
-        
+
         [RelayCommand]
-        private void ClearLocation()
-        {
+        private void ClearLocation() {
             Latitude = null;
             Longitude = null;
             LocationDescription = null;
@@ -141,7 +140,7 @@ namespace recibos.features.Receipts.Presentation.ViewModels {
             if (drawingView == null || drawingView.Lines.Count <= 0) return;
 
             try {
-                using var stream = await drawingView.GetImageStream(imageSizeWidth: 300, imageSizeHeight: 100);
+                using var stream = await drawingView.GetImageStream(300, 100);
                 using var memoryStream = new MemoryStream();
                 await stream.CopyToAsync(memoryStream);
                 byte[] bytes = memoryStream.ToArray();
@@ -159,7 +158,7 @@ namespace recibos.features.Receipts.Presentation.ViewModels {
                 await Shell.Current.DisplayAlert("Datos incompletos", "La matrícula es obligatoria", "OK");
                 return;
             }
-            
+
             IsBusy = true;
 
             try {

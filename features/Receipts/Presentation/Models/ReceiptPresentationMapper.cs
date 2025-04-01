@@ -1,13 +1,9 @@
 ﻿using recibos.features.Receipts.Domain.Models;
 
-namespace recibos.features.Receipts.Presentation.Models
-{
-    public class ReceiptPresentationMapper : IReceiptPresentationMapper
-    {
-        public ReceiptListItemModel DomainToPresentation(Receipt receipt)
-        {
-            return new ReceiptListItemModel
-            {
+namespace recibos.features.Receipts.Presentation.Models {
+    public class ReceiptPresentationMapper : IReceiptPresentationMapper {
+        public ReceiptListItemModel DomainToPresentation(Receipt receipt) {
+            return new ReceiptListItemModel {
                 Id = receipt.Id,
                 Title = receipt.Title,
                 Matricula = receipt.Matricula,
@@ -15,11 +11,9 @@ namespace recibos.features.Receipts.Presentation.Models
                 CreatedAt = receipt.CreatedAt
             };
         }
-        
-        public ReceiptDetailModel DomainToDetailPresentation(Receipt receipt)
-        {
-            return new ReceiptDetailModel
-            {
+
+        public ReceiptDetailModel DomainToDetailPresentation(Receipt receipt) {
+            return new ReceiptDetailModel {
                 Id = receipt.Id,
                 Title = receipt.Title,
                 Matricula = receipt.Matricula,
@@ -34,10 +28,8 @@ namespace recibos.features.Receipts.Presentation.Models
             };
         }
 
-        public Receipt PresentationToDomain(ReceiptListItemModel model)
-        {
-            return new Receipt
-            {
+        public Receipt PresentationToDomain(ReceiptListItemModel model) {
+            return new Receipt {
                 Id = model.Id,
                 Title = model.Title,
                 Matricula = model.Matricula,
@@ -45,11 +37,9 @@ namespace recibos.features.Receipts.Presentation.Models
                 CreatedAt = model.CreatedAt
             };
         }
-        
-        public Receipt PresentationDetailToDomain(ReceiptDetailModel model)
-        {
-            return new Receipt
-            {
+
+        public Receipt PresentationDetailToDomain(ReceiptDetailModel model) {
+            return new Receipt {
                 Id = model.Id,
                 Title = model.Title,
                 Matricula = model.Matricula,

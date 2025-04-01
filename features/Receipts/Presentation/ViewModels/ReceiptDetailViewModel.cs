@@ -11,33 +11,41 @@ using recibos.Resources.Strings;
 
 namespace recibos.features.Receipts.Presentation.ViewModels {
     [QueryProperty(nameof(ReceiptId), "id")]
-    
     public partial class ReceiptDetailViewModel : ObservableObject {
-        private readonly IReceiptService _receiptService;
-        private readonly IReceiptPresentationMapper _mapper;
         private readonly ILocationService _locationService;
-
-        [ObservableProperty] [NotifyPropertyChangedFor(nameof(OperationType))] private ReceiptDetailModel _receipt;
-        [ObservableProperty] private string _receiptId;
-        [ObservableProperty] [NotifyPropertyChangedFor(nameof(IsNotLoading))] private bool _isLoading;
-        public bool IsNotLoading => !IsLoading;
-        [ObservableProperty] [NotifyPropertyChangedFor(nameof(IsNotEditing))] private bool _isEditing;
-        public bool IsNotEditing => !IsEditing;
-        [ObservableProperty] private ImageSource _signatureImage;
-        [ObservableProperty] private ObservableCollection<ImageInfo> _photos;
-        [ObservableProperty] private bool _isLocationEnabled;
+        private readonly IReceiptPresentationMapper _mapper;
+        private readonly IReceiptService _receiptService;
         [ObservableProperty] private bool _isCapturingLocation;
-        
-        public string OperationType => Receipt?.IsDescarga == true ? AppResources.UnloadLabel : AppResources.LoadLabel;
+
+        [ObservableProperty] [NotifyPropertyChangedFor(nameof(IsNotEditing))]
+        private bool _isEditing;
+
+        [ObservableProperty] [NotifyPropertyChangedFor(nameof(IsNotLoading))]
+        private bool _isLoading;
+
+        [ObservableProperty] private bool _isLocationEnabled;
+        [ObservableProperty] private ObservableCollection<ImageInfo> _photos;
+
+        [ObservableProperty] [NotifyPropertyChangedFor(nameof(OperationType))]
+        private ReceiptDetailModel _receipt;
+
+        [ObservableProperty] private string _receiptId;
+        [ObservableProperty] private ImageSource _signatureImage;
+
         public ReceiptDetailViewModel(
-            IReceiptService receiptService, 
+            IReceiptService receiptService,
             IReceiptPresentationMapper mapper,
             ILocationService locationService) {
-                _receiptService = receiptService ?? throw new ArgumentNullException(nameof(receiptService));
-                _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-                _locationService = locationService ?? throw new ArgumentNullException(nameof(locationService));
-                Photos = new ObservableCollection<ImageInfo>();
-            }
+            _receiptService = receiptService ?? throw new ArgumentNullException(nameof(receiptService));
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            _locationService = locationService ?? throw new ArgumentNullException(nameof(locationService));
+            Photos = new ObservableCollection<ImageInfo>();
+        }
+
+        public bool IsNotLoading => !IsLoading;
+        public bool IsNotEditing => !IsEditing;
+
+        public string OperationType => Receipt?.IsDescarga == true ? AppResources.UnloadLabel : AppResources.LoadLabel;
 
         partial void OnReceiptIdChanged(string value) {
             try {
@@ -49,15 +57,12 @@ namespace recibos.features.Receipts.Presentation.ViewModels {
                 Debug.WriteLine($"Error al procesar ID: {ex.Message}");
             }
         }
-        partial void OnReceiptChanged(ReceiptDetailModel value)
-        {
-            if (value != null)
-            {
+
+        partial void OnReceiptChanged(ReceiptDetailModel value) {
+            if (value != null) {
                 // Escuchar los cambios de IsDescarga
-                value.PropertyChanged += (sender, e) =>
-                {
-                    if (e.PropertyName == nameof(ReceiptDetailModel.IsDescarga))
-                    {
+                value.PropertyChanged += (sender, e) => {
+                    if (e.PropertyName == nameof(ReceiptDetailModel.IsDescarga)) {
                         // Notificar que OperationType también ha cambiado
                         OnPropertyChanged(nameof(OperationType));
                     }
@@ -68,7 +73,7 @@ namespace recibos.features.Receipts.Presentation.ViewModels {
         [RelayCommand]
         public async Task Save() {
             if (Receipt == null) return;
-            
+
             if (string.IsNullOrWhiteSpace(Receipt.Matricula)) {
                 await Shell.Current.DisplayAlert("Datos incompletos", "La matrícula es obligatoria", "OK");
                 return;
@@ -86,7 +91,7 @@ namespace recibos.features.Receipts.Presentation.ViewModels {
 
                 // Determinar si es una creación o actualización
                 bool esNuevo = Receipt.Id == 0;
-                var updatedReceipt = esNuevo 
+                var updatedReceipt = esNuevo
                     ? await _receiptService.AddReceiptAsync(domainReceipt)
                     : await _receiptService.UpdateReceiptAsync(domainReceipt);
 
@@ -94,9 +99,9 @@ namespace recibos.features.Receipts.Presentation.ViewModels {
                 if (updatedReceipt != null) {
                     Receipt = _mapper.DomainToDetailPresentation(updatedReceipt);
                     LoadPhotosAndSignature();
-                    await Shell.Current.DisplayAlert("Éxito", 
+                    await Shell.Current.DisplayAlert("Éxito",
                         esNuevo ? "Recibo creado correctamente" : "Recibo actualizado correctamente", "OK");
-            
+
                     // Si es un recibo nuevo, navegar hacia atrás
                     if (esNuevo) {
                         await Shell.Current.GoToAsync("..");
@@ -104,7 +109,7 @@ namespace recibos.features.Receipts.Presentation.ViewModels {
                     }
                 }
                 else {
-                    await Shell.Current.DisplayAlert("Error", 
+                    await Shell.Current.DisplayAlert("Error",
                         esNuevo ? "No se pudo crear el recibo" : "No se pudo actualizar el recibo", "OK");
                 }
 
@@ -147,15 +152,12 @@ namespace recibos.features.Receipts.Presentation.ViewModels {
         private void Edit() => IsEditing = true;
 
         [RelayCommand]
-        private async Task Cancel() 
-        {
-            if (Receipt?.Id == 0) 
-            {
+        private async Task Cancel() {
+            if (Receipt?.Id == 0) {
                 // Es un recibo nuevo, volver a la pantalla anterior
                 await Shell.Current.GoToAsync("..");
             }
-            else 
-            {
+            else {
                 // Es un recibo existente, salir del modo edición
                 IsEditing = false;
             }
@@ -214,45 +216,38 @@ namespace recibos.features.Receipts.Presentation.ViewModels {
                 Photos.Remove(photo);
             }
         }
-        
+
         [RelayCommand]
-        private async Task CaptureLocation()
-        {
+        private async Task CaptureLocation() {
             if (IsCapturingLocation) return;
-        
+
             IsCapturingLocation = true;
-        
-            try
-            {
+
+            try {
                 var result = await _locationService.GetCurrentLocationAsync();
-            
-                if (result.IsSuccess)
-                {
+
+                if (result.IsSuccess) {
                     Receipt.Latitude = result.Latitude;
                     Receipt.Longitude = result.Longitude;
                     Receipt.LocationDescription = await _locationService.GetLocationDescriptionAsync(
                         result.Latitude.Value, result.Longitude.Value);
                     IsLocationEnabled = true;
                 }
-                else
-                {
+                else {
                     await Shell.Current.DisplayAlert("Error", result.ErrorMessage, "OK");
                 }
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 Debug.WriteLine($"Error al capturar ubicación: {ex.Message}");
                 await Shell.Current.DisplayAlert("Error", "No se pudo capturar la ubicación", "OK");
             }
-            finally
-            {
+            finally {
                 IsCapturingLocation = false;
             }
         }
-        
+
         [RelayCommand]
-        private void ClearLocation()
-        {
+        private void ClearLocation() {
             Receipt.Latitude = null;
             Receipt.Longitude = null;
             Receipt.LocationDescription = null;
@@ -265,7 +260,9 @@ namespace recibos.features.Receipts.Presentation.ViewModels {
             if (drawingView == null || drawingView.Lines.Count <= 0) return;
 
             try {
-                using var stream = await drawingView.GetImageStream(imageSizeWidth: 300, imageSizeHeight: 100);
+                using var stream = await drawingView.GetImageStream(
+                    300,
+                    100);
                 using var memoryStream = new MemoryStream();
                 await stream.CopyToAsync(memoryStream);
                 byte[] bytes = memoryStream.ToArray();
@@ -296,7 +293,7 @@ namespace recibos.features.Receipts.Presentation.ViewModels {
 
                 // Convertir a modelo de presentación
                 Receipt = _mapper.DomainToDetailPresentation(domainReceipt);
-                
+
                 IsLocationEnabled = Receipt.Latitude.HasValue && Receipt.Longitude.HasValue;
 
                 LoadPhotosAndSignature();

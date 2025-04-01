@@ -3,51 +3,32 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-             xmlns:converters="clr-namespace:recibos.Converters"
              xmlns:models="clr-namespace:recibos.features.Receipts.Domain.Models"
              xmlns:strings="clr-namespace:recibos.Resources.Strings"
              x:Class="recibos.features.Receipts.Presentation.Pages.NewReceiptPage"
              x:Name="NewReceiptPageRoot"
-             Title="Nuevo Recibo">
-
-    <ContentPage.Resources>
-        <ResourceDictionary>
-            <toolkit:InvertedBoolConverter x:Key="InvertedBoolConverter" />
-            <converters:NullToBoolConverter x:Key="NullToBoolConverter" />
-            <converters:InvertedNullToBoolConverter x:Key="InvertedNullToBoolConverter" />
-            <Style TargetType="Button">
-                <Setter Property="Margin" Value="0,5,0,5" />
-                <Setter Property="HeightRequest" Value="50" />
-            </Style>
-            <Style TargetType="Label">
-                <Setter Property="Margin" Value="0,5,0,0" />
-                <Setter Property="FontSize" Value="14" />
-            </Style>
-            <Style TargetType="Entry">
-                <Setter Property="Margin" Value="0,0,0,10" />
-                <Setter Property="HeightRequest" Value="40" />
-            </Style>
-        </ResourceDictionary>
-    </ContentPage.Resources>
+             Title="{x:Static strings:AppResources.NewReceiptPageTitle}">
 
     <ScrollView>
-        <VerticalStackLayout Margin="20">
+        <VerticalStackLayout Margin="24">
             <!-- Título -->
             <Label Text="{x:Static strings:AppResources.TitleLabel}"
                    Style="{StaticResource TitleMedium}" />
             <Entry Text="{Binding Title}"
+                   Margin="0,0,0,16"
                    Placeholder="{x:Static strings:AppResources.TitlePlaceholder}" />
             <!-- Matrícula -->
             <Label Text="{x:Static strings:AppResources.LicensePlateLabel}"
                    Style="{StaticResource TitleMedium}" />
             <Entry Text="{Binding Matricula}"
+                   Margin="0,0,0,16"
                    Placeholder="{x:Static strings:AppResources.LicensePlatePlaceholder}" />
-            <!-- Tipo de Movimiento -->
+            <!-- Tipo de operacion -->
             <Label Text="{x:Static strings:AppResources.OperationTypeLabel}"
                    Style="{StaticResource TitleMedium}" />
             <HorizontalStackLayout
-                Spacing="12"
-                Margin="0,5,0,10">
+                Spacing="16"
+                Margin="0,0,0,8">
                 <Switch IsToggled="{Binding IsDescarga}" />
                 <Label
                     Text="{Binding OperationType}"
@@ -58,6 +39,7 @@
             <Label Text="{x:Static strings:AppResources.NoteLabel}"
                    Style="{StaticResource TitleMedium}" />
             <Entry Text="{Binding Nota}"
+                   Margin="0,0,0,16"
                    Placeholder="{x:Static strings:AppResources.NotePlaceholder}" />
             <!-- Fotos -->
             <Label Text="{x:Static strings:AppResources.PhotosLabel}"
@@ -67,6 +49,8 @@
                 <VerticalStackLayout>
                     <CollectionView ItemsSource="{Binding Photos}"
                                     HeightRequest="200"
+                                    VerticalOptions="Center"
+                                    HorizontalOptions="Center"
                                     EmptyView="{x:Static strings:AppResources.NoPhotosYet}">
                         <CollectionView.ItemsLayout>
                             <LinearItemsLayout Orientation="Horizontal" ItemSpacing="10" />
@@ -98,6 +82,7 @@
                             Command="{Binding TakePhotoCommand}" />
                 </VerticalStackLayout>
             </Border>
+            
             <!-- Localizacion -->
             <Label Text="{x:Static strings:AppResources.LocationLabel}"
                    Style="{StaticResource TitleMedium}" />
@@ -110,16 +95,14 @@
                                Style="{StaticResource BodyMedium}"
                                TextColor="#007bff" />
                         <Label Text="{Binding Latitude, StringFormat='Lat: {0:F6}'}"
-                               Style="{StaticResource LabelMedium}" 
-                               TextColor="Gray" />
+                               Style="{StaticResource LabelMedium}" />
                         <Label Text="{Binding Longitude, StringFormat='Long: {0:F6}'}"
-                               Style="{StaticResource LabelMedium}" 
-                               TextColor="Gray" />
+                               Style="{StaticResource LabelMedium}" />
                         <Button Text="{x:Static strings:AppResources.DeleteLocation}"
                                 Command="{Binding ClearLocationCommand}"
+                                Margin="0,0,0,8"
                                 Style="{StaticResource DeleteButton}" />
                     </VerticalStackLayout>
-
                     <!-- Capture location button -->
                     <Button Text="{x:Static strings:AppResources.CaptureCurrentLocation}"
                             Style="{StaticResource SaveButton}"
@@ -130,10 +113,13 @@
                                        HorizontalOptions="Center" />
                 </VerticalStackLayout>
             </Border>
+            
             <!-- Firma -->
             <Label Text="{x:Static strings:AppResources.SignatureLabel}"
                    Style="{StaticResource TitleMedium}" />
-            <HorizontalStackLayout Spacing="10" Margin="0,0,0,10">
+            <HorizontalStackLayout 
+                Spacing="10" 
+                Margin="0,0,0,0">
                 <CheckBox x:Name="NoSignatureCheckbox"
                           IsChecked="{Binding NoSignatureRequired}" 
                           VerticalOptions="Center"/>
@@ -156,8 +142,10 @@
                             Style="{StaticResource DeleteButton}" />
                 </VerticalStackLayout>
             </Border>
+            
             <!-- Botones -->
             <Button Text="{x:Static strings:AppResources.SaveButton}" 
+                    Margin="0,0,0,16"
                     Clicked="SaveButton_Clicked"
                     Style="{StaticResource SaveButton}" />
             <Button Text="{x:Static strings:AppResources.CancelButton}" 
