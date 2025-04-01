@@ -8,28 +8,40 @@
              x:Class="recibos.features.Receipts.Presentation.Pages.ReceiptsPage"
              Title="{x:Static strings:AppResources.PageTitle}">
 
-    <Grid>
-        <!-- Contenido principal (búsqueda y lista) -->
-        <Grid RowDefinitions="Auto,*" RowSpacing="0" Padding="10">
-            <!-- Barra de Búsqueda -->
+    <!-- Use a single Grid row that fills the page -->
+    <Grid RowDefinitions="*">
+        <!-- Main Content Grid -->
+        <Grid Grid.Row="0" RowDefinitions="Auto, Auto, *" RowSpacing="0" Padding="10">
+
+            <!-- Error Message (Moved to Row 0) -->
+            <Grid Grid.Row="0"
+                  IsVisible="{Binding HasError}"
+                  BackgroundColor="#FFE6E6"
+                  Padding="16" Margin="0,0,0,5"> <!-- Added bottom margin -->
+                <Label Text="{Binding ErrorMessage}"
+                       TextColor="Red"
+                       HorizontalOptions="Center" />
+            </Grid>
+
+            <!-- Barra de Búsqueda (Moved to Row 1) -->
             <SearchBar
-                Grid.Row="0"
+                Grid.Row="1"
                 Placeholder="{x:Static strings:AppResources.SearchBarPlaceholder}"
                 Text="{Binding SearchText}"
                 Style="{StaticResource MaterialSearchBar}" />
 
-            <!-- Lista de Recibos -->
+            <!-- Lista de Recibos (Moved to Row 2) -->
             <RefreshView
-                Grid.Row="1"
+                Grid.Row="2"
                 Command="{Binding RefreshCommand}"
                 IsRefreshing="{Binding IsRefreshing}">
                 <CollectionView ItemsSource="{Binding FilteredReceipts}"
                                 SelectionMode="None"
-                                ItemsUpdatingScrollMode="KeepLastItemInView">
+                                ItemsUpdatingScrollMode="KeepItemsInView">
                     <!-- Plantilla de los elementos de la lista -->
                     <CollectionView.ItemTemplate>
                         <DataTemplate x:DataType="models1:ReceiptListItemModel">
-                            <Border Style="{StaticResource ElevatedCard}" 
+                            <Border Style="{StaticResource ElevatedCard}"
                                     Margin="16,8">
                                 <Border.GestureRecognizers>
                                     <TapGestureRecognizer
@@ -37,21 +49,25 @@
                                         CommandParameter="{Binding .}" />
                                 </Border.GestureRecognizers>
                                 <Grid RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="4">
-                                    <Label Grid.Row="0" Text="{Binding Title, TargetNullValue={x:Static strings:AppResources.NoTitle}}"
+                                    <Label Grid.Row="0"
+                                           Text="{Binding Title, TargetNullValue={x:Static strings:AppResources.NoTitle}}"
                                            Style="{StaticResource TitleMedium}" />
-                                    <Label Grid.Row="1" Text="{Binding Matricula, StringFormat={x:Static strings:AppResources.LicensePlateFormat}}"
+                                    <Label Grid.Row="1"
+                                           Text="{Binding Matricula, StringFormat={x:Static strings:AppResources.LicensePlateFormat}}"
                                            Style="{StaticResource BodyMedium}" />
-                                    <Label Grid.Row="2" Text="{Binding FormattedDate, StringFormat={x:Static strings:AppResources.DateFormat}}"
+                                    <Label Grid.Row="2"
+                                           Text="{Binding FormattedDate, StringFormat={x:Static strings:AppResources.DateFormat}}"
                                            Style="{StaticResource LabelMedium}" />
                                 </Grid>
                             </Border>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
-                    
+
                     <!-- Vista de lista vacía -->
                     <CollectionView.EmptyView>
                         <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center">
-                            <Label Text="{x:Static strings:AppResources.EmptyListTitle}" Style="{StaticResource TitleMedium}"
+                            <Label Text="{x:Static strings:AppResources.EmptyListTitle}"
+                                   Style="{StaticResource TitleMedium}"
                                    HorizontalTextAlignment="Center" />
                             <Label Text="{x:Static strings:AppResources.EmptyListMessage}"
                                    Style="{StaticResource BodyMedium}" HorizontalTextAlignment="Center" />
@@ -59,16 +75,17 @@
                     </CollectionView.EmptyView>
                 </CollectionView>
             </RefreshView>
+
+            <!-- Botón Flotante + (Kept within the main content Grid, positioned by alignment and margin) -->
+            <Button
+                Grid.Row="3"
+                Text="{x:Static strings:AppResources.AddReceiptButton}"
+                Style="{StaticResource FloatingActionButton}"
+                HorizontalOptions="End"
+                VerticalOptions="End"
+                Margin="16"
+                Command="{Binding AddReceiptCommand}" />
+
         </Grid>
-
-        <!-- Botón Flotante + -->
-        <Button
-            Text="{x:Static strings:AppResources.AddReceiptButton}"
-            Style="{StaticResource FloatingActionButton}"
-            HorizontalOptions="End"
-            VerticalOptions="End"
-            Command="{Binding AddReceiptCommand}">
-        </Button>
-
     </Grid>
 </ContentPage>

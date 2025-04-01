@@ -9,328 +9,343 @@
              x:Name="ReceiptDetailPageRoot"
              Title="{x:Static strings:AppResources.ReceiptDetailTitle}">
 
-    <ScrollView>
-        <VerticalStackLayout Margin="24">
-            <!-- Indicador de Carga -->
-            <ActivityIndicator IsRunning="{Binding IsLoading}"
-                               IsVisible="{Binding IsLoading}"
-                               HorizontalOptions="Center"
-                               VerticalOptions="Center" />
-            <!-- Contenido -->
-            <Grid IsVisible="{Binding IsLoading, Converter={StaticResource InvertedBoolConverter}}">
-                <!-- Detalles del Recibo -->
-                <VerticalStackLayout IsVisible="{Binding IsEditing, Converter={StaticResource InvertedBoolConverter}}">
-                    <!-- Título -->
-                    <Label Text="{x:Static strings:AppResources.TitleLabel}"
-                           Margin="0,0,0,16"
-                           Style="{StaticResource TitleMedium}" />
-                    <Label Text="{Binding Receipt.Title}"
-                           Margin="0,0,0,16"
-                           Style="{StaticResource BodyMedium}" />
+    <Grid RowDefinitions="Auto,*">
+        <!-- Error Message -->
+        <Grid Grid.Row="0"
+              IsVisible="{Binding HasError}"
+              BackgroundColor="#FFE6E6"
+              Padding="16"
+              Margin="0,50,0,0">
+            <Label Text="{Binding ErrorMessage}"
+                   TextColor="Red"
+                   HorizontalOptions="Center" />
+        </Grid>
 
-                    <!-- Matrícula -->
-                    <Label Text="{x:Static strings:AppResources.LicensePlateLabel}"
-                           Margin="0,0,0,16"
-                           Style="{StaticResource TitleMedium}" />
-                    <Label Text="{Binding Receipt.Matricula}"
-                           Margin="0,0,0,16"
-                           Style="{StaticResource BodyMedium}" />
-
-                    <!-- Tipo de movimiento -->
-                    <Label Text="{x:Static strings:AppResources.OperationTypeLabel}"
-                           Margin="0,0,0,16"
-                           Style="{StaticResource TitleMedium}" />
-                    <Label Text="{Binding OperationType}"
-                           Margin="0,0,0,16"
-                           Style="{StaticResource BodyMedium}" />
-
-                    <!-- Nota -->
-                    <Label Text="{x:Static strings:AppResources.NoteLabel}"
-                           Margin="0,0,0,16"
-                           Style="{StaticResource TitleMedium}" />
-                    <Label Text="{Binding Receipt.Nota}"
-                           Margin="0,0,0,16"
-                           MaxLines="4"
-                           Style="{StaticResource BodyMedium}" />
-
-                    <!-- Fecha y Hora -->
-                    <Label Text="{x:Static strings:AppResources.DateTimeLabel}"
-                           Margin="0,0,0,16"
-                           Style="{StaticResource TitleMedium}" />
-                    <Label Text="{Binding Receipt.FormattedDate}"
-                           Margin="0,0,0,16"
-                           Style="{StaticResource BodyMedium}" />
-
-                    <!-- Sección de Fotos -->
-                    <Label Text="{x:Static strings:AppResources.PhotosLabel}"
-                           Margin="0,0,0,16"
-                           Style="{StaticResource TitleMedium}" />
-                    <Border Style="{StaticResource MaterialCard}"
-                            Margin="0,0,0,16">
-                        <VerticalStackLayout>
-                            <Label
-                                Text="{Binding Photos.Count, StringFormat={x:Static strings:AppResources.TotalPhotosFormat}}"
-                                Style="{StaticResource BodyMedium}"
-                                IsVisible="{Binding Photos.Count, Converter={StaticResource NotEqualToZeroConverter}}" />
-                            <CarouselView ItemsSource="{Binding Photos}"
-                                          HeightRequest="250"
-                                          IndicatorView="indicatorView"
-                                          IsVisible="{Binding Photos.Count, Converter={StaticResource NotEqualToZeroConverter}}">
-                                <CarouselView.ItemTemplate>
-                                    <DataTemplate x:DataType="models:ImageInfo">
-                                        <Grid>
-                                            <Image Source="{Binding Source}"
-                                                   Aspect="AspectFit"
-                                                   HorizontalOptions="Center"
-                                                   VerticalOptions="Center" />
-                                        </Grid>
-                                    </DataTemplate>
-                                </CarouselView.ItemTemplate>
-                            </CarouselView>
-                            <Label Text="{x:Static strings:AppResources.NoPhotos}"
-                                   Style="{StaticResource LabelMedium}"
-                                   HorizontalOptions="Center"
-                                   VerticalOptions="Center"
-                                   IsVisible="{Binding Photos.Count, Converter={StaticResource EqualToZeroConverter}}" />
-                        </VerticalStackLayout>
-                    </Border>
-                    <IndicatorView x:Name="indicatorView"
-                                   SelectedIndicatorColor="#007bff"
-                                   IndicatorColor="LightGray"
-                                   IsVisible="{Binding Photos.Count, Converter={StaticResource NotEqualToZeroConverter}}"
-                                   HorizontalOptions="Center" />
-
-                    <!-- Ubicación -->
-                    <Label Text="{x:Static strings:AppResources.LocationLabel}"
-                           Margin="0,0,0,16"
-                           Style="{StaticResource TitleMedium}" />
-                    <Border IsVisible="{Binding IsEditing, Converter={StaticResource InvertedBoolConverter}}"
-                            Style="{StaticResource MaterialCard}"
-                            Margin="0,0,0,16">
-                        <VerticalStackLayout>
-                            <Label Text="{Binding Receipt.LocationDescription}"
-                                   IsVisible="{Binding Receipt.HasLocation}"
-                                   TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
-                                   FontAttributes="Bold"
-                                   Style="{StaticResource BodyMedium}" />
-                            <Grid ColumnDefinitions="Auto,*"
-                                  IsVisible="{Binding Receipt.HasLocation}"
-                                  Margin="0,4,0,4">
-                                <Label Grid.Column="0"
-                                       Text="Lat: "
-                                       Style="{StaticResource LabelMedium}"
-                                       TextColor="{AppThemeBinding Light={StaticResource Tertiary}, Dark={StaticResource TertiaryDark}}" />
-                                <Label Grid.Column="1"
-                                       Text="{Binding Receipt.Latitude, StringFormat='{0:F6}'}"
-                                       Style="{StaticResource LabelMedium}" />
-                            </Grid>
-                            <Grid ColumnDefinitions="Auto,*"
-                                  IsVisible="{Binding Receipt.HasLocation}"
-                                  Margin="0,0,0,4">
-                                <Label Grid.Column="0"
-                                       Text="Long: "
-                                       Style="{StaticResource LabelMedium}"
-                                       TextColor="{AppThemeBinding Light={StaticResource Tertiary}, Dark={StaticResource TertiaryDark}}" />
-                                <Label Grid.Column="1"
-                                       Text="{Binding Receipt.Longitude, StringFormat='{0:F6}'}"
-                                       Style="{StaticResource LabelMedium}" />
-                            </Grid>
-                            <Label Text="{x:Static strings:AppResources.NoLocationData}"
-                                   IsVisible="{Binding Receipt.HasLocation, Converter={StaticResource InvertedBoolConverter}}"
-                                   HorizontalOptions="Center"
-                                   Style="{StaticResource LabelMedium}" />
-                        </VerticalStackLayout>
-                    </Border>
-
-                    <!-- Sección de Firma -->
-                    <Label Text="{x:Static strings:AppResources.SignatureLabel}"
-                           Margin="0,0,0,16"
-                           Style="{StaticResource TitleMedium}" />
-                    <Border
-                        Style="{StaticResource MaterialCard}"
-                        Margin="0,0,0,16">
-                        <VerticalStackLayout>
-                            <Image Source="{Binding SignatureImage}"
-                                   Aspect="AspectFit"
-                                   HorizontalOptions="Center"
-                                   IsVisible="{Binding SignatureImage, Converter={StaticResource NullToBoolConverter}}" />
-                            <Label Text="{x:Static strings:AppResources.NoSignature}"
-                                   Style="{StaticResource LabelMedium}"
-                                   HorizontalOptions="Center"
-                                   VerticalOptions="Center"
-                                   IsVisible="{Binding SignatureImage, Converter={StaticResource InvertedNullToBoolConverter}}" />
-                            <Label Text="{x:Static strings:AppResources.NoSignatureRequired}"
-                                   IsVisible="{Binding Receipt.NoSignatureRequired}"
-                                   Style="{StaticResource BodyMedium}"
+        <!-- Main Content -->
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Margin="24">
+                <!-- Indicador de Carga -->
+                <ActivityIndicator IsRunning="{Binding IsLoading}"
+                                   IsVisible="{Binding IsLoading}"
                                    HorizontalOptions="Center"
                                    VerticalOptions="Center" />
-                        </VerticalStackLayout>
-                    </Border>
-
-                    <!-- Botones de Acción -->
-                    <Button Text="{x:Static strings:AppResources.EditButton}"
-                            Command="{Binding EditCommand}"
-                            Margin="0,0,0,16"
-                            Style="{StaticResource SaveButton}" />
-                    <Button Text="{x:Static strings:AppResources.DeleteButton}"
-                            Command="{Binding DeleteCommand}"
-                            Style="{StaticResource DeleteButton}" />
-                </VerticalStackLayout>
-                <!-- Edición del Recibo -->
-                <VerticalStackLayout IsVisible="{Binding IsEditing}">
-                    <!-- Título -->
-                    <Label Text="{x:Static strings:AppResources.TitleLabel}"
-                           Margin="0,0,0,16"
-                           Style="{StaticResource TitleMedium}" />
-                    <Entry Text="{Binding Receipt.Title}"
-                           Margin="0,0,0,16"
-                           Placeholder="{x:Static strings:AppResources.OptionalTitlePlaceholder}" />
-
-                    <!-- Matrícula -->
-                    <Label Text="{x:Static strings:AppResources.LicensePlateLabel}"
-                           Margin="0,0,0,16"
-                           Style="{StaticResource TitleMedium}" />
-                    <Entry Text="{Binding Receipt.Matricula}"
-                           Margin="0,0,0,16" />
-
-                    <!-- Tipo de operación -->
-                    <Label Text="{x:Static strings:AppResources.OperationTypeLabel}"
-                           Margin="0,0,0,16"
-                           Style="{StaticResource TitleMedium}" />
-                    <HorizontalStackLayout Margin="0,0,0,16">
-                        <Switch IsToggled="{Binding Receipt.IsDescarga}" />
-                        <Label Text="{Binding OperationType}"
-                               VerticalOptions="Center"
+                <!-- Contenido -->
+                <Grid IsVisible="{Binding IsLoading, Converter={StaticResource InvertedBoolConverter}}">
+                    <!-- Detalles del Recibo -->
+                    <VerticalStackLayout
+                        IsVisible="{Binding IsEditing, Converter={StaticResource InvertedBoolConverter}}">
+                        <!-- Título -->
+                        <Label Text="{x:Static strings:AppResources.TitleLabel}"
+                               Margin="0,0,0,16"
+                               Style="{StaticResource TitleMedium}" />
+                        <Label Text="{Binding Receipt.Title}"
+                               Margin="0,0,0,16"
                                Style="{StaticResource BodyMedium}" />
-                    </HorizontalStackLayout>
 
-                    <!-- Nota -->
-                    <Label Text="{x:Static strings:AppResources.NoteLabel}"
-                           Margin="0,0,0,16"
-                           Style="{StaticResource TitleMedium}" />
-                    <Entry Text="{Binding Receipt.Nota}"
-                           Margin="0,0,0,16"
-                           Placeholder="{x:Static strings:AppResources.OptionalNotePlaceholder}" />
+                        <!-- Matrícula -->
+                        <Label Text="{x:Static strings:AppResources.LicensePlateLabel}"
+                               Margin="0,0,0,16"
+                               Style="{StaticResource TitleMedium}" />
+                        <Label Text="{Binding Receipt.Matricula}"
+                               Margin="0,0,0,16"
+                               Style="{StaticResource BodyMedium}" />
 
-                    <!-- Edición de Fotos -->
-                    <Label Text="{x:Static strings:AppResources.PhotosLabel}"
-                           Margin="0,0,0,16"
-                           Style="{StaticResource TitleMedium}" />
-                    <Border Style="{StaticResource MaterialCard}"
-                            Margin="0,0,0,16">
-                        <VerticalStackLayout>
-                            <CollectionView ItemsSource="{Binding Photos}"
-                                            HeightRequest="200"
-                                            EmptyView="{x:Static strings:AppResources.NoPhotosYet}"
-                                            HorizontalOptions="Center">
-                                <CollectionView.ItemsLayout>
-                                    <LinearItemsLayout Orientation="Horizontal"
-                                                       ItemSpacing="10" />
-                                </CollectionView.ItemsLayout>
-                                <CollectionView.ItemTemplate>
-                                    <DataTemplate x:DataType="models:ImageInfo">
-                                        <Grid WidthRequest="150"
-                                              HeightRequest="150">
-                                            <Border Style="{StaticResource MaterialCard}">
+                        <!-- Tipo de movimiento -->
+                        <Label Text="{x:Static strings:AppResources.OperationTypeLabel}"
+                               Margin="0,0,0,16"
+                               Style="{StaticResource TitleMedium}" />
+                        <Label Text="{Binding OperationType}"
+                               Margin="0,0,0,16"
+                               Style="{StaticResource BodyMedium}" />
+
+                        <!-- Nota -->
+                        <Label Text="{x:Static strings:AppResources.NoteLabel}"
+                               Margin="0,0,0,16"
+                               Style="{StaticResource TitleMedium}" />
+                        <Label Text="{Binding Receipt.Nota}"
+                               Margin="0,0,0,16"
+                               MaxLines="4"
+                               Style="{StaticResource BodyMedium}" />
+
+                        <!-- Fecha y Hora -->
+                        <Label Text="{x:Static strings:AppResources.DateTimeLabel}"
+                               Margin="0,0,0,16"
+                               Style="{StaticResource TitleMedium}" />
+                        <Label Text="{Binding Receipt.FormattedDate}"
+                               Margin="0,0,0,16"
+                               Style="{StaticResource BodyMedium}" />
+
+                        <!-- Sección de Fotos -->
+                        <Label Text="{x:Static strings:AppResources.PhotosLabel}"
+                               Margin="0,0,0,16"
+                               Style="{StaticResource TitleMedium}" />
+                        <Border Style="{StaticResource MaterialCard}"
+                                Margin="0,0,0,16">
+                            <VerticalStackLayout>
+                                <Label
+                                    Text="{Binding Photos.Count, StringFormat={x:Static strings:AppResources.TotalPhotosFormat}}"
+                                    Style="{StaticResource BodyMedium}"
+                                    IsVisible="{Binding Photos.Count, Converter={StaticResource NotEqualToZeroConverter}}" />
+                                <CarouselView ItemsSource="{Binding Photos}"
+                                              HeightRequest="250"
+                                              IndicatorView="indicatorView"
+                                              IsVisible="{Binding Photos.Count, Converter={StaticResource NotEqualToZeroConverter}}">
+                                    <CarouselView.ItemTemplate>
+                                        <DataTemplate x:DataType="models:ImageInfo">
+                                            <Grid>
                                                 <Image Source="{Binding Source}"
-                                                       Aspect="AspectFill"
-                                                       WidthRequest="150"
-                                                       HeightRequest="150" />
-                                            </Border>
-                                            <Button Text="X"
-                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeletePhotoCommand}"
-                                                    CommandParameter="{Binding .}"
-                                                    BackgroundColor="#dc3545"
-                                                    TextColor="White"
-                                                    HeightRequest="30"
-                                                    WidthRequest="30"
-                                                    Padding="0"
-                                                    CornerRadius="15"
-                                                    HorizontalOptions="End"
-                                                    VerticalOptions="Start"
-                                                    Margin="0,5,5,0" />
-                                        </Grid>
-                                    </DataTemplate>
-                                </CollectionView.ItemTemplate>
-                            </CollectionView>
-                            <Button Text="{x:Static strings:AppResources.TakePhoto}"
-                                    Command="{Binding TakePhotoCommand}" />
-                        </VerticalStackLayout>
-                    </Border>
+                                                       Aspect="AspectFit"
+                                                       HorizontalOptions="Center"
+                                                       VerticalOptions="Center" />
+                                            </Grid>
+                                        </DataTemplate>
+                                    </CarouselView.ItemTemplate>
+                                </CarouselView>
+                                <Label Text="{x:Static strings:AppResources.NoPhotos}"
+                                       Style="{StaticResource LabelMedium}"
+                                       HorizontalOptions="Center"
+                                       VerticalOptions="Center"
+                                       IsVisible="{Binding Photos.Count, Converter={StaticResource EqualToZeroConverter}}" />
+                            </VerticalStackLayout>
+                        </Border>
+                        <IndicatorView x:Name="indicatorView"
+                                       SelectedIndicatorColor="#007bff"
+                                       IndicatorColor="LightGray"
+                                       IsVisible="{Binding Photos.Count, Converter={StaticResource NotEqualToZeroConverter}}"
+                                       HorizontalOptions="Center" />
 
-                    <!-- Edición de Ubicación -->
-                    <Label Text="{x:Static strings:AppResources.LocationLabel}"
-                           Margin="0,0,0,16"
-                           Style="{StaticResource TitleMedium}" />
-                    <Border IsVisible="{Binding IsEditing}"
+                        <!-- Ubicación -->
+                        <Label Text="{x:Static strings:AppResources.LocationLabel}"
+                               Margin="0,0,0,16"
+                               Style="{StaticResource TitleMedium}" />
+                        <Border IsVisible="{Binding IsEditing, Converter={StaticResource InvertedBoolConverter}}"
+                                Style="{StaticResource MaterialCard}"
+                                Margin="0,0,0,16">
+                            <VerticalStackLayout>
+                                <Label Text="{Binding Receipt.LocationDescription}"
+                                       IsVisible="{Binding Receipt.HasLocation}"
+                                       TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                                       FontAttributes="Bold"
+                                       Style="{StaticResource BodyMedium}" />
+                                <Grid ColumnDefinitions="Auto,*"
+                                      IsVisible="{Binding Receipt.HasLocation}"
+                                      Margin="0,4,0,4">
+                                    <Label Grid.Column="0"
+                                           Text="Lat: "
+                                           Style="{StaticResource LabelMedium}"
+                                           TextColor="{AppThemeBinding Light={StaticResource Tertiary}, Dark={StaticResource TertiaryDark}}" />
+                                    <Label Grid.Column="1"
+                                           Text="{Binding Receipt.Latitude, StringFormat='{0:F6}'}"
+                                           Style="{StaticResource LabelMedium}" />
+                                </Grid>
+                                <Grid ColumnDefinitions="Auto,*"
+                                      IsVisible="{Binding Receipt.HasLocation}"
+                                      Margin="0,0,0,4">
+                                    <Label Grid.Column="0"
+                                           Text="Long: "
+                                           Style="{StaticResource LabelMedium}"
+                                           TextColor="{AppThemeBinding Light={StaticResource Tertiary}, Dark={StaticResource TertiaryDark}}" />
+                                    <Label Grid.Column="1"
+                                           Text="{Binding Receipt.Longitude, StringFormat='{0:F6}'}"
+                                           Style="{StaticResource LabelMedium}" />
+                                </Grid>
+                                <Label Text="{x:Static strings:AppResources.NoLocationData}"
+                                       IsVisible="{Binding Receipt.HasLocation, Converter={StaticResource InvertedBoolConverter}}"
+                                       HorizontalOptions="Center"
+                                       Style="{StaticResource LabelMedium}" />
+                            </VerticalStackLayout>
+                        </Border>
+
+                        <!-- Sección de Firma -->
+                        <Label Text="{x:Static strings:AppResources.SignatureLabel}"
+                               Margin="0,0,0,16"
+                               Style="{StaticResource TitleMedium}" />
+                        <Border
                             Style="{StaticResource MaterialCard}"
                             Margin="0,0,0,16">
-                        <VerticalStackLayout>
-                            <!-- Location info display -->
-                            <VerticalStackLayout IsVisible="{Binding IsLocationEnabled}">
-                                <Label Text="{Binding Receipt.LocationDescription}"
+                            <VerticalStackLayout>
+                                <Image Source="{Binding SignatureImage}"
+                                       Aspect="AspectFit"
+                                       HorizontalOptions="Center"
+                                       IsVisible="{Binding SignatureImage, Converter={StaticResource NullToBoolConverter}}" />
+                                <Label Text="{x:Static strings:AppResources.NoSignature}"
+                                       Style="{StaticResource LabelMedium}"
+                                       HorizontalOptions="Center"
+                                       VerticalOptions="Center"
+                                       IsVisible="{Binding SignatureImage, Converter={StaticResource InvertedNullToBoolConverter}}" />
+                                <Label Text="{x:Static strings:AppResources.NoSignatureRequired}"
+                                       IsVisible="{Binding Receipt.NoSignatureRequired}"
                                        Style="{StaticResource BodyMedium}"
-                                       TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
-                                       FontAttributes="Bold" />
-                                <Label Text="{Binding Receipt.Latitude, StringFormat='Lat: {0:F6}'}"
-                                       Style="{StaticResource BodyMedium}" />
-                                <Label Text="{Binding Receipt.Longitude, StringFormat='Long: {0:F6}'}"
-                                       Margin="0,0,0,16"
-                                       Style="{StaticResource BodyMedium}" />
-                                <Button Text="{x:Static strings:AppResources.DeleteLocation}"
-                                        Command="{Binding ClearLocationCommand}"
-                                        Margin="0,0,0,8"
+                                       HorizontalOptions="Center"
+                                       VerticalOptions="Center" />
+                            </VerticalStackLayout>
+                        </Border>
+
+                        <!-- Botones de Acción -->
+                        <Button Text="{x:Static strings:AppResources.EditButton}"
+                                Command="{Binding EditCommand}"
+                                Margin="0,0,0,16"
+                                Style="{StaticResource SaveButton}" />
+                        <Button Text="{x:Static strings:AppResources.DeleteButton}"
+                                Command="{Binding DeleteCommand}"
+                                Style="{StaticResource DeleteButton}" />
+                    </VerticalStackLayout>
+                    <!-- Edición del Recibo -->
+                    <VerticalStackLayout IsVisible="{Binding IsEditing}">
+                        <!-- Título -->
+                        <Label Text="{x:Static strings:AppResources.TitleLabel}"
+                               Margin="0,0,0,16"
+                               Style="{StaticResource TitleMedium}" />
+                        <Entry Text="{Binding Receipt.Title}"
+                               Margin="0,0,0,16"
+                               Placeholder="{x:Static strings:AppResources.OptionalTitlePlaceholder}" />
+
+                        <!-- Matrícula -->
+                        <Label Text="{x:Static strings:AppResources.LicensePlateLabel}"
+                               Margin="0,0,0,16"
+                               Style="{StaticResource TitleMedium}" />
+                        <Entry Text="{Binding Receipt.Matricula}"
+                               Margin="0,0,0,16" />
+
+                        <!-- Tipo de operación -->
+                        <Label Text="{x:Static strings:AppResources.OperationTypeLabel}"
+                               Margin="0,0,0,16"
+                               Style="{StaticResource TitleMedium}" />
+                        <HorizontalStackLayout Margin="0,0,0,16">
+                            <Switch IsToggled="{Binding Receipt.IsDescarga}" />
+                            <Label Text="{Binding OperationType}"
+                                   VerticalOptions="Center"
+                                   Style="{StaticResource BodyMedium}" />
+                        </HorizontalStackLayout>
+
+                        <!-- Nota -->
+                        <Label Text="{x:Static strings:AppResources.NoteLabel}"
+                               Margin="0,0,0,16"
+                               Style="{StaticResource TitleMedium}" />
+                        <Entry Text="{Binding Receipt.Nota}"
+                               Margin="0,0,0,16"
+                               Placeholder="{x:Static strings:AppResources.OptionalNotePlaceholder}" />
+
+                        <!-- Edición de Fotos -->
+                        <Label Text="{x:Static strings:AppResources.PhotosLabel}"
+                               Margin="0,0,0,16"
+                               Style="{StaticResource TitleMedium}" />
+                        <Border Style="{StaticResource MaterialCard}"
+                                Margin="0,0,0,16">
+                            <VerticalStackLayout>
+                                <CollectionView ItemsSource="{Binding Photos}"
+                                                HeightRequest="200"
+                                                EmptyView="{x:Static strings:AppResources.NoPhotosYet}"
+                                                HorizontalOptions="Center">
+                                    <CollectionView.ItemsLayout>
+                                        <LinearItemsLayout Orientation="Horizontal"
+                                                           ItemSpacing="10" />
+                                    </CollectionView.ItemsLayout>
+                                    <CollectionView.ItemTemplate>
+                                        <DataTemplate x:DataType="models:ImageInfo">
+                                            <Grid WidthRequest="150"
+                                                  HeightRequest="150">
+                                                <Border Style="{StaticResource MaterialCard}">
+                                                    <Image Source="{Binding Source}"
+                                                           Aspect="AspectFill"
+                                                           WidthRequest="150"
+                                                           HeightRequest="150" />
+                                                </Border>
+                                                <Button Text="X"
+                                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeletePhotoCommand}"
+                                                        CommandParameter="{Binding .}"
+                                                        BackgroundColor="#dc3545"
+                                                        TextColor="White"
+                                                        HeightRequest="30"
+                                                        WidthRequest="30"
+                                                        Padding="0"
+                                                        CornerRadius="15"
+                                                        HorizontalOptions="End"
+                                                        VerticalOptions="Start"
+                                                        Margin="0,5,5,0" />
+                                            </Grid>
+                                        </DataTemplate>
+                                    </CollectionView.ItemTemplate>
+                                </CollectionView>
+                                <Button Text="{x:Static strings:AppResources.TakePhoto}"
+                                        Command="{Binding TakePhotoCommand}" />
+                            </VerticalStackLayout>
+                        </Border>
+
+                        <!-- Edición de Ubicación -->
+                        <Label Text="{x:Static strings:AppResources.LocationLabel}"
+                               Margin="0,0,0,16"
+                               Style="{StaticResource TitleMedium}" />
+                        <Border IsVisible="{Binding IsEditing}"
+                                Style="{StaticResource MaterialCard}"
+                                Margin="0,0,0,16">
+                            <VerticalStackLayout>
+                                <!-- Location info display -->
+                                <VerticalStackLayout IsVisible="{Binding IsLocationEnabled}">
+                                    <Label Text="{Binding Receipt.LocationDescription}"
+                                           Style="{StaticResource BodyMedium}"
+                                           TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                                           FontAttributes="Bold" />
+                                    <Label Text="{Binding Receipt.Latitude, StringFormat='Lat: {0:F6}'}"
+                                           Style="{StaticResource BodyMedium}" />
+                                    <Label Text="{Binding Receipt.Longitude, StringFormat='Long: {0:F6}'}"
+                                           Margin="0,0,0,16"
+                                           Style="{StaticResource BodyMedium}" />
+                                    <Button Text="{x:Static strings:AppResources.DeleteLocation}"
+                                            Command="{Binding ClearLocationCommand}"
+                                            Margin="0,0,0,8"
+                                            Style="{StaticResource DeleteButton}" />
+                                </VerticalStackLayout>
+
+                                <!-- Capture location button -->
+                                <Button Text="{x:Static strings:AppResources.CaptureCurrentLocation}"
+                                        Command="{Binding CaptureLocationCommand}"
+                                        Style="{StaticResource SaveButton}"
+                                        IsEnabled="{Binding IsCapturingLocation, Converter={StaticResource InvertedBoolConverter}}" />
+
+                                <ActivityIndicator IsRunning="{Binding IsCapturingLocation}"
+                                                   IsVisible="{Binding IsCapturingLocation}"
+                                                   HorizontalOptions="Center" />
+                            </VerticalStackLayout>
+                        </Border>
+
+                        <!-- Edición de Firma -->
+                        <Label Text="{x:Static strings:AppResources.SignatureLabel}"
+                               Margin="0,0,0,16"
+                               Style="{StaticResource TitleMedium}" />
+                        <HorizontalStackLayout Spacing="10"
+                                               Margin="0,0,0,16">
+                            <CheckBox IsChecked="{Binding Receipt.NoSignatureRequired}"
+                                      VerticalOptions="Center" />
+                            <Label Text="{x:Static strings:AppResources.NoSignatureRequired}"
+                                   Style="{StaticResource BodyMedium}"
+                                   VerticalOptions="Center" />
+                        </HorizontalStackLayout>
+
+                        <Border Style="{StaticResource MaterialCard}"
+                                Margin="0,0,0,16">
+                            <VerticalStackLayout>
+                                <toolkit:DrawingView x:Name="SignatureDrawingView"
+                                                     HeightRequest="200"
+                                                     BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}"
+                                                     LineColor="{AppThemeBinding Light={StaticResource OnSurface}, Dark={StaticResource OnSurfaceDark}}"
+                                                     LineWidth="3" />
+                                <Button Text="{x:Static strings:AppResources.ClearSignature}"
+                                        Clicked="ClearSignature_Clicked"
                                         Style="{StaticResource DeleteButton}" />
                             </VerticalStackLayout>
+                        </Border>
 
-                            <!-- Capture location button -->
-                            <Button Text="{x:Static strings:AppResources.CaptureCurrentLocation}"
-                                    Command="{Binding CaptureLocationCommand}"
-                                    Style="{StaticResource SaveButton}"
-                                    IsEnabled="{Binding IsCapturingLocation, Converter={StaticResource InvertedBoolConverter}}" />
-
-                            <ActivityIndicator IsRunning="{Binding IsCapturingLocation}"
-                                               IsVisible="{Binding IsCapturingLocation}"
-                                               HorizontalOptions="Center" />
-                        </VerticalStackLayout>
-                    </Border>
-
-                    <!-- Edición de Firma -->
-                    <Label Text="{x:Static strings:AppResources.SignatureLabel}"
-                           Margin="0,0,0,16"
-                           Style="{StaticResource TitleMedium}" />
-                    <HorizontalStackLayout Spacing="10"
-                                           Margin="0,0,0,16">
-                        <CheckBox IsChecked="{Binding Receipt.NoSignatureRequired}"
-                                  VerticalOptions="Center" />
-                        <Label Text="{x:Static strings:AppResources.NoSignatureRequired}"
-                               Style="{StaticResource BodyMedium}"
-                               VerticalOptions="Center" />
-                    </HorizontalStackLayout>
-
-                    <Border Style="{StaticResource MaterialCard}"
-                            Margin="0,0,0,16">
-                        <VerticalStackLayout>
-                            <toolkit:DrawingView x:Name="SignatureDrawingView"
-                                                 HeightRequest="200"
-                                                 BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}"
-                                                 LineColor="{AppThemeBinding Light={StaticResource OnSurface}, Dark={StaticResource OnSurfaceDark}}"
-                                                 LineWidth="3" />
-                            <Button Text="{x:Static strings:AppResources.ClearSignature}"
-                                    Clicked="ClearSignature_Clicked"
-                                    Style="{StaticResource DeleteButton}" />
-                        </VerticalStackLayout>
-                    </Border>
-
-                    <Button Text="{x:Static strings:AppResources.SaveButton}"
-                            Clicked="SaveButton_Clicked"
-                            Margin="0,0,0,16"
-                            Style="{StaticResource SaveButton}" />
-                    <Button Text="{x:Static strings:AppResources.CancelButton}"
-                            Command="{Binding CancelCommand}"
-                            Style="{StaticResource DeleteButton}" />
-                </VerticalStackLayout>
-            </Grid>
-        </VerticalStackLayout>
-    </ScrollView>
+                        <Button Text="{x:Static strings:AppResources.SaveButton}"
+                                Clicked="SaveButton_Clicked"
+                                Margin="0,0,0,16"
+                                Style="{StaticResource SaveButton}" />
+                        <Button Text="{x:Static strings:AppResources.CancelButton}"
+                                Command="{Binding CancelCommand}"
+                                Style="{StaticResource DeleteButton}" />
+                    </VerticalStackLayout>
+                </Grid>
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
 </ContentPage>

@@ -1,20 +1,29 @@
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using FluentResults;
 using recibos.core.data.services.location;
-using recibos.features.Receipts.Domain.Interfaces;
 using recibos.features.Receipts.Domain.Models;
+using recibos.features.Receipts.Domain.UseCases;
 using recibos.features.Receipts.Presentation.Models;
 using recibos.Resources.Strings;
 
 namespace recibos.features.Receipts.Presentation.ViewModels {
     [QueryProperty(nameof(ReceiptId), "id")]
     public partial class ReceiptDetailViewModel : ObservableObject {
+        private readonly DeleteReceiptUseCase _deleteReceiptUseCase;
+        private readonly GetReceiptDetailsUseCase _getReceiptDetailsUseCase;
         private readonly ILocationService _locationService;
         private readonly IReceiptPresentationMapper _mapper;
-        private readonly IReceiptService _receiptService;
+        private readonly UpdateReceiptUseCase _updateReceiptUseCase;
+
+        [ObservableProperty] private string _errorMessage;
+
+        [ObservableProperty] private bool _hasError;
+
         [ObservableProperty] private bool _isCapturingLocation;
 
         [ObservableProperty] [NotifyPropertyChangedFor(nameof(IsNotEditing))]
@@ -33,10 +42,17 @@ namespace recibos.features.Receipts.Presentation.ViewModels {
         [ObservableProperty] private ImageSource _signatureImage;
 
         public ReceiptDetailViewModel(
-            IReceiptService receiptService,
+            GetReceiptDetailsUseCase getReceiptDetailsUseCase,
+            UpdateReceiptUseCase updateReceiptUseCase,
+            DeleteReceiptUseCase deleteReceiptUseCase,
             IReceiptPresentationMapper mapper,
             ILocationService locationService) {
-            _receiptService = receiptService ?? throw new ArgumentNullException(nameof(receiptService));
+            _getReceiptDetailsUseCase = getReceiptDetailsUseCase ??
+                                        throw new ArgumentNullException(nameof(getReceiptDetailsUseCase));
+            _updateReceiptUseCase =
+                updateReceiptUseCase ?? throw new ArgumentNullException(nameof(updateReceiptUseCase));
+            _deleteReceiptUseCase =
+                deleteReceiptUseCase ?? throw new ArgumentNullException(nameof(deleteReceiptUseCase));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _locationService = locationService ?? throw new ArgumentNullException(nameof(locationService));
             Photos = new ObservableCollection<ImageInfo>();
@@ -52,21 +68,31 @@ namespace recibos.features.Receipts.Presentation.ViewModels {
                 if (int.TryParse(value, out int id)) {
                     LoadReceipt(id);
                 }
+                else if (!string.IsNullOrEmpty(value)) {
+                    IsLoading = false;
+                    HasError = true;
+                    ErrorMessage = $"El ID de recibo '{value}' no es válido.";
+                    Debug.WriteLine($"Error: ID de recibo no válido: {value}");
+                }
             }
             catch (Exception ex) {
+                IsLoading = false;
+                HasError = true;
+                ErrorMessage = $"Error inesperado al procesar ID: {ex.Message}";
                 Debug.WriteLine($"Error al procesar ID: {ex.Message}");
             }
         }
 
         partial void OnReceiptChanged(ReceiptDetailModel value) {
             if (value != null) {
-                // Escuchar los cambios de IsDescarga
-                value.PropertyChanged += (sender, e) => {
-                    if (e.PropertyName == nameof(ReceiptDetailModel.IsDescarga)) {
-                        // Notificar que OperationType también ha cambiado
-                        OnPropertyChanged(nameof(OperationType));
-                    }
-                };
+                value.PropertyChanged -= Receipt_PropertyChanged;
+                value.PropertyChanged += Receipt_PropertyChanged;
+            }
+        }
+
+        private void Receipt_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+            if (e.PropertyName == nameof(ReceiptDetailModel.IsDescarga)) {
+                OnPropertyChanged(nameof(OperationType));
             }
         }
 
@@ -74,51 +100,46 @@ namespace recibos.features.Receipts.Presentation.ViewModels {
         public async Task Save() {
             if (Receipt == null) return;
 
+            if (Receipt.Id <= 0) {
+                Debug.WriteLine("Error: Intento de guardar un recibo sin ID válido desde ReceiptDetailViewModel.");
+                await Shell.Current.DisplayAlert("Error", "No se puede guardar un recibo con ID inválido.", "OK");
+                return;
+            }
+
             if (string.IsNullOrWhiteSpace(Receipt.Matricula)) {
                 await Shell.Current.DisplayAlert("Datos incompletos", "La matrícula es obligatoria", "OK");
                 return;
             }
 
-            try {
-                Receipt.Title = Receipt.Title ?? string.Empty;
-                Receipt.Nota = Receipt.Nota ?? string.Empty;
-                var photosBase64 = Photos.Select(p => p.Base64).ToList();
+            IsLoading = true;
+            HasError = false;
+            ErrorMessage = string.Empty;
 
-                // Transferir datos al dominio mediante el mapper
-                var domainReceipt = _mapper.PresentationDetailToDomain(Receipt);
-                domainReceipt.PhotosBase64 = photosBase64;
-                domainReceipt.SignatureBase64 = Receipt.SignatureBase64;
+            Receipt.Title = Receipt.Title ?? string.Empty;
+            Receipt.Nota = Receipt.Nota ?? string.Empty;
+            var photosBase64 = Photos.Select(p => p.Base64).ToList();
 
-                // Determinar si es una creación o actualización
-                bool esNuevo = Receipt.Id == 0;
-                var updatedReceipt = esNuevo
-                    ? await _receiptService.AddReceiptAsync(domainReceipt)
-                    : await _receiptService.UpdateReceiptAsync(domainReceipt);
+            var domainReceipt = _mapper.PresentationDetailToDomain(Receipt);
+            domainReceipt.PhotosBase64 = photosBase64;
+            domainReceipt.SignatureBase64 = Receipt.SignatureBase64;
 
-                // Actualizar el modelo de presentación con el resultado
-                if (updatedReceipt != null) {
-                    Receipt = _mapper.DomainToDetailPresentation(updatedReceipt);
-                    LoadPhotosAndSignature();
-                    await Shell.Current.DisplayAlert("Éxito",
-                        esNuevo ? "Recibo creado correctamente" : "Recibo actualizado correctamente", "OK");
+            Result<Receipt> result = await _updateReceiptUseCase.ExecuteAsync(domainReceipt);
 
-                    // Si es un recibo nuevo, navegar hacia atrás
-                    if (esNuevo) {
-                        await Shell.Current.GoToAsync("..");
-                        return;
-                    }
-                }
-                else {
-                    await Shell.Current.DisplayAlert("Error",
-                        esNuevo ? "No se pudo crear el recibo" : "No se pudo actualizar el recibo", "OK");
-                }
-
+            if (result.IsSuccess) {
+                Receipt updatedDomainReceipt = result.Value;
+                Receipt = _mapper.DomainToDetailPresentation(updatedDomainReceipt);
+                LoadPhotosAndSignature();
                 IsEditing = false;
+                Debug.WriteLine($"Recibo {Receipt.Id} actualizado correctamente.");
+                await Shell.Current.DisplayAlert("Éxito", "Recibo actualizado correctamente", "OK");
             }
-            catch (Exception ex) {
-                Debug.WriteLine($"Error al guardar recibo: {ex.Message}");
-                await Shell.Current.DisplayAlert("Error", "No se pudo guardar el recibo", "OK");
+            else {
+                ErrorMessage = result.Errors.FirstOrDefault()?.Message ?? "Error desconocido al guardar el recibo.";
+                HasError = true;
+                Debug.WriteLine($"Error al guardar recibo {Receipt.Id}: {ErrorMessage}");
             }
+
+            IsLoading = false;
         }
 
         [RelayCommand]
@@ -132,20 +153,23 @@ namespace recibos.features.Receipts.Presentation.ViewModels {
 
             if (!confirm) return;
 
-            try {
-                bool success = await _receiptService.DeleteReceiptAsync(Receipt.Id);
+            IsLoading = true;
+            HasError = false;
+            ErrorMessage = string.Empty;
 
-                if (success) {
-                    await Shell.Current.GoToAsync("..");
-                }
-                else {
-                    await Shell.Current.DisplayAlert("Error", "No se pudo eliminar el recibo", "OK");
-                }
+            Result result = await _deleteReceiptUseCase.ExecuteAsync(Receipt.Id);
+
+            if (result.IsSuccess) {
+                Debug.WriteLine($"Recibo {Receipt.Id} eliminado correctamente.");
+                await Shell.Current.GoToAsync("..");
             }
-            catch (Exception ex) {
-                Debug.WriteLine($"Error al eliminar recibo: {ex.Message}");
-                await Shell.Current.DisplayAlert("Error", "No se pudo eliminar el recibo", "OK");
+            else {
+                ErrorMessage = result.Errors.FirstOrDefault()?.Message ?? "Error desconocido al eliminar el recibo.";
+                HasError = true;
+                Debug.WriteLine($"Error al eliminar recibo {Receipt.Id}: {ErrorMessage}");
             }
+
+            IsLoading = false;
         }
 
         [RelayCommand]
@@ -153,13 +177,12 @@ namespace recibos.features.Receipts.Presentation.ViewModels {
 
         [RelayCommand]
         private async Task Cancel() {
-            if (Receipt?.Id == 0) {
-                // Es un recibo nuevo, volver a la pantalla anterior
-                await Shell.Current.GoToAsync("..");
+            if (Receipt != null && Receipt.Id > 0) {
+                IsEditing = false;
+                LoadReceipt(Receipt.Id);
             }
             else {
-                // Es un recibo existente, salir del modo edición
-                IsEditing = false;
+                await Shell.Current.GoToAsync("..");
             }
         }
 
@@ -182,10 +205,10 @@ namespace recibos.features.Receipts.Presentation.ViewModels {
 
                 var status = await CheckAndRequestCameraPermission();
                 if (status != PermissionStatus.Granted) {
-                    await Shell.Current.DisplayAlert(
-                        "Permiso denegado",
-                        "No se puede acceder a la cámara. Revisa los permisos de la aplicación.",
-                        "OK");
+                    if (status != PermissionStatus.Denied || DeviceInfo.Platform != DevicePlatform.iOS) {
+                        await Shell.Current.DisplayAlert("Permiso denegado", "No se puede acceder a la cámara.", "OK");
+                    }
+
                     return;
                 }
 
@@ -255,7 +278,6 @@ namespace recibos.features.Receipts.Presentation.ViewModels {
         }
 
         public async Task SaveSignatureFromDrawingView(IDrawingView drawingView) {
-            // Si no requiere firma, no hacer nada
             if (Receipt?.NoSignatureRequired == true) return;
             if (drawingView == null || drawingView.Lines.Count <= 0) return;
 
@@ -280,31 +302,24 @@ namespace recibos.features.Receipts.Presentation.ViewModels {
 
         private async void LoadReceipt(int receiptId) {
             IsLoading = true;
+            HasError = false;
+            ErrorMessage = string.Empty;
 
-            try {
-                var domainReceipt = await _receiptService.GetReceiptAsync(receiptId);
+            Result<Receipt> result = await _getReceiptDetailsUseCase.ExecuteAsync(receiptId);
 
-                if (domainReceipt == null) {
-                    Debug.WriteLine($"Recibo no encontrado con ID: {receiptId}");
-                    await Shell.Current.DisplayAlert("Error", "Recibo no encontrado", "OK");
-                    await Shell.Current.GoToAsync("..");
-                    return;
-                }
-
-                // Convertir a modelo de presentación
+            if (result.IsSuccess) {
+                Receipt domainReceipt = result.Value;
                 Receipt = _mapper.DomainToDetailPresentation(domainReceipt);
-
                 IsLocationEnabled = Receipt.Latitude.HasValue && Receipt.Longitude.HasValue;
-
                 LoadPhotosAndSignature();
             }
-            catch (Exception ex) {
-                Debug.WriteLine($"Error al cargar recibo: {ex.Message}");
-                await Shell.Current.DisplayAlert("Error", "No se pudo cargar el recibo", "OK");
+            else {
+                ErrorMessage = result.Errors.FirstOrDefault()?.Message ?? "Error desconocido al cargar el recibo.";
+                HasError = true;
+                Debug.WriteLine($"Error al cargar recibo {receiptId}: {ErrorMessage}");
             }
-            finally {
-                IsLoading = false;
-            }
+
+            IsLoading = false;
         }
 
         private void LoadPhotosAndSignature() {
@@ -330,14 +345,12 @@ namespace recibos.features.Receipts.Presentation.ViewModels {
             if (Receipt?.Id == 0) return;
 
             try {
-                // Carga lazy y caché de imágenes
-                var domainReceipt = await _receiptService.GetReceiptAsync(Receipt.Id);
+                var domainReceipt = await _getReceiptDetailsUseCase.ExecuteAsync(Receipt.Id);
 
-                if (domainReceipt?.PhotosBase64?.Any() != true)
+                if (domainReceipt?.Value.PhotosBase64?.Any() != true)
                     return;
 
-                // Procesar en paralelo para mejorar rendimiento
-                var tasks = domainReceipt.PhotosBase64
+                var tasks = domainReceipt.Value.PhotosBase64
                     .Where(base64 => !string.IsNullOrEmpty(base64))
                     .Select(async base64 => {
                         try {
@@ -363,11 +376,23 @@ namespace recibos.features.Receipts.Presentation.ViewModels {
         }
 
         private static async Task<PermissionStatus> CheckAndRequestCameraPermission() {
-            var status = await Permissions.CheckStatusAsync<Permissions.Camera>();
+            PermissionStatus status = await Permissions.CheckStatusAsync<Permissions.Camera>();
 
-            if (status != PermissionStatus.Granted) {
-                status = await Permissions.RequestAsync<Permissions.Camera>();
+            if (status == PermissionStatus.Granted)
+                return status;
+
+            if (status == PermissionStatus.Denied && DeviceInfo.Platform == DevicePlatform.iOS) {
+                await Shell.Current.DisplayAlert("Permiso requerido",
+                    "El permiso de cámara fue denegado. Por favor, habilítalo en los ajustes.", "OK");
+                return status;
             }
+
+            if (Permissions.ShouldShowRationale<Permissions.Camera>()) {
+                await Shell.Current.DisplayAlert("Permiso requerido",
+                    "Se necesita acceso a la cámara para tomar fotos del recibo.", "OK");
+            }
+
+            status = await Permissions.RequestAsync<Permissions.Camera>();
 
             return status;
         }

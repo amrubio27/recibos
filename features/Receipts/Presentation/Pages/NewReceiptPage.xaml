@@ -59,19 +59,19 @@
                             <DataTemplate x:DataType="models:ImageInfo">
                                 <Grid WidthRequest="150" HeightRequest="150">
                                     <Border Style="{StaticResource MaterialCard}">
-                                        <Image Source="{Binding Source}" 
+                                        <Image Source="{Binding Source}"
                                                Aspect="AspectFill" />
                                     </Border>
                                     <Button Text="X"
                                             Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeletePhotoCommand}"
                                             CommandParameter="{Binding .}"
-                                            BackgroundColor="#dc3545" 
+                                            BackgroundColor="#dc3545"
                                             TextColor="White"
-                                            HeightRequest="30" 
+                                            HeightRequest="30"
                                             WidthRequest="30"
-                                            Padding="0" 
+                                            Padding="0"
                                             CornerRadius="15"
-                                            HorizontalOptions="End" 
+                                            HorizontalOptions="End"
                                             VerticalOptions="Start"
                                             Margin="0,5,5,0" />
                                 </Grid>
@@ -82,7 +82,7 @@
                             Command="{Binding TakePhotoCommand}" />
                 </VerticalStackLayout>
             </Border>
-            
+
             <!-- Localizacion -->
             <Label Text="{x:Static strings:AppResources.LocationLabel}"
                    Style="{StaticResource TitleMedium}" />
@@ -91,7 +91,7 @@
                 <VerticalStackLayout>
                     <!-- Location info display -->
                     <VerticalStackLayout IsVisible="{Binding IsLocationEnabled}">
-                        <Label Text="{Binding LocationDescription}" 
+                        <Label Text="{Binding LocationDescription}"
                                Style="{StaticResource BodyMedium}"
                                TextColor="#007bff" />
                         <Label Text="{Binding Latitude, StringFormat='Lat: {0:F6}'}"
@@ -113,19 +113,19 @@
                                        HorizontalOptions="Center" />
                 </VerticalStackLayout>
             </Border>
-            
+
             <!-- Firma -->
             <Label Text="{x:Static strings:AppResources.SignatureLabel}"
                    Style="{StaticResource TitleMedium}" />
-            <HorizontalStackLayout 
-                Spacing="10" 
+            <HorizontalStackLayout
+                Spacing="10"
                 Margin="0,0,0,0">
                 <CheckBox x:Name="NoSignatureCheckbox"
-                          IsChecked="{Binding NoSignatureRequired}" 
-                          VerticalOptions="Center"/>
+                          IsChecked="{Binding NoSignatureRequired}"
+                          VerticalOptions="Center" />
                 <Label Text="{x:Static strings:AppResources.NoSignatureRequired}"
                        Style="{StaticResource BodyMedium}"
-                       VerticalOptions="Center"/>
+                       VerticalOptions="Center" />
             </HorizontalStackLayout>
 
             <Border Style="{StaticResource MaterialCard}"
@@ -138,21 +138,31 @@
                                          LineColor="{AppThemeBinding Light={StaticResource OnSurface}, Dark={StaticResource OnSurfaceDark}}"
                                          LineWidth="3" />
                     <Button Text="{x:Static strings:AppResources.ClearSignature}"
-                            Clicked="ClearSignature_Clicked"
+                            Command="{Binding ClearSignatureCommand}"
                             Style="{StaticResource DeleteButton}" />
                 </VerticalStackLayout>
             </Border>
-            
+
+            <!-- Error Message -->
+            <Grid IsVisible="{Binding HasError}"
+                  BackgroundColor="#FFE6E6"
+                  Padding="16" Margin="0,0,0,10">
+                <Label Text="{Binding ErrorMessage}"
+                       TextColor="Red"
+                       HorizontalOptions="Center" />
+            </Grid>
+
             <!-- Botones -->
-            <Button Text="{x:Static strings:AppResources.SaveButton}" 
+            <Button Text="{x:Static strings:AppResources.SaveButton}"
                     Margin="0,0,0,16"
-                    Clicked="SaveButton_Clicked"
+                    Command="{Binding SaveCommand}"
+                    CommandParameter="{Reference SignatureDrawingView}"
                     Style="{StaticResource SaveButton}" />
-            <Button Text="{x:Static strings:AppResources.CancelButton}" 
+            <Button Text="{x:Static strings:AppResources.CancelButton}"
                     Command="{Binding CancelCommand}"
                     Style="{StaticResource DeleteButton}" />
-            <ActivityIndicator IsVisible="{Binding IsBusy}" 
-                               IsRunning="{Binding IsBusy}" 
+            <ActivityIndicator IsVisible="{Binding IsBusy}"
+                               IsRunning="{Binding IsBusy}"
                                HorizontalOptions="Center"
                                Margin="0,20,0,0" />
         </VerticalStackLayout>
